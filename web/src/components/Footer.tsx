@@ -8,7 +8,7 @@ const footerLinks = {
     { label: "Our Story", href: "#" },
     { label: "Code of Conduct", href: "#" },
     { label: "GitHub", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "Contact", href: "mailto:coffeelcoder@gmail.com" },
   ],
   Community: [
     { label: "Discord Server", href: "#" },
@@ -138,13 +138,17 @@ export default function Footer() {
             © 2026 Coffeel Coder
           </p>
           <div className="flex gap-4">
-            {["Privacy", "Terms", "Cookies"].map((item) => (
+            {[
+              { name: "Privacy", href: "/privacy" },
+              { name: "Terms", href: "/terms" },
+              { name: "Cookies", href: "/privacy" },
+            ].map((item) => (
               <a
-                key={item}
-                href="#"
+                key={item.name}
+                href={item.href}
                 className="text-xs text-[#6f4e37]/70 hover:text-amber-500 transition-colors"
               >
-                {item}
+                {item.name}
               </a>
             ))}
           </div>

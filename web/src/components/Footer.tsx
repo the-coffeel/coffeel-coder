@@ -23,7 +23,7 @@ const footerLinks = {
     { label: "Consulting", href: "#" },
   ],
   Resources: [
-    { label: "Blog", href: "#blog" },
+    { label: "Blog", href: "blog" },
     { label: "Projects", href: "#projects" },
     { label: "Events", href: "#events" },
     { label: "Newsletter", href: "#" },

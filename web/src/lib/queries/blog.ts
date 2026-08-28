@@ -28,6 +28,7 @@ export type SanityBlog = {
     publishedAt: string;
     authors: {
         name: string;
+        position: string | null;
         avatar: {
             asset: { _ref: string; _id?: string };
             alt?: string;
@@ -39,6 +40,15 @@ export type SanityBlog = {
         alt?: string;
     } | null;
     featured: boolean;
+};
+
+export type SanityContentBlock = {
+    _key: string;
+    _type: string;
+    style?: string;
+    children?: { _key: string; text?: string; marks?: string[] }[];
+    listItem?: string;
+    level?: number;
 };
 
 // ---------------------------------------------------------------------------
@@ -60,6 +70,7 @@ const BLOG_PROJECTION = /* groq */ `{
     "authors": authors[]->{
         _id,
         "name": fullname,
+        position,
         avatar
     },
     "mainImage": thumbnail,
@@ -77,6 +88,13 @@ export const BLOGS_BY_CATEGORY_QUERY = groq`
 
 export const FEATURED_BLOG_QUERY = groq`
     *[_type == "blog" && featured == true] | order(publishedAt desc)[0] ${BLOG_PROJECTION}
+`;
+
+export const BLOG_BY_SLUG_QUERY = groq`
+    *[_type == "blog" && slug.current == $slug][0] {
+        ...${BLOG_PROJECTION},
+        content
+    }
 `;
 
 export const ALL_CATEGORIES_QUERY = groq`
@@ -98,6 +116,16 @@ export async function getAllBlogs(): Promise<SanityBlog[]> {
 
 export async function getFeaturedBlog(): Promise<SanityBlog | null> {
     return client.fetch(FEATURED_BLOG_QUERY, {}, { next: { revalidate: 60 } });
+}
+
+export async function getBlogBySlug(
+    slug: string,
+): Promise<(SanityBlog & { content?: SanityContentBlock[] }) | null> {
+    return client.fetch(
+        BLOG_BY_SLUG_QUERY,
+        { slug },
+        { next: { revalidate: 60 } },
+    );
 }
 
 export async function getAllCategories(): Promise<SanityCategory[]> {

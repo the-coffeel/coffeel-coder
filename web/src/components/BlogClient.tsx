@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { urlFor } from '@/lib/image';
@@ -60,9 +61,15 @@ function formatDate(iso: string) {
 // Small pieces
 // ---------------------------------------------------------------------------
 
-function PourLink({ children }: { children: React.ReactNode }) {
-    return (
-        <span className="group relative inline-block cursor-pointer">
+function PourLink({
+    children,
+    href,
+}: {
+    children: React.ReactNode;
+    href?: string;
+}) {
+    const content = (
+        <>
             {children}
             <motion.span
                 className="absolute -bottom-0.5 left-0 w-full origin-left bg-[#D6F24B]"
@@ -71,6 +78,19 @@ function PourLink({ children }: { children: React.ReactNode }) {
                 animate={{ scaleX: 0 }}
                 transition={{ duration: 0.28, ease: 'easeOut' }}
             />
+        </>
+    );
+
+    return href ? (
+        <Link
+            href={href}
+            className="group relative inline-block cursor-pointer"
+        >
+            {content}
+        </Link>
+    ) : (
+        <span className="group relative inline-block cursor-pointer">
+            {content}
         </span>
     );
 }
@@ -239,14 +259,17 @@ export default function BlogClient({ blogs, categories }: Props) {
                     >
                         <div className="overflow-hidden sm:col-span-3">
                             {featured.mainImage && (
-                                <img
-                                    src={urlFor(featured.mainImage)
-                                        .width(1200)
-                                        .height(900)
-                                        .url()}
-                                    alt={featured.mainImage.alt ?? ''}
-                                    className="h-64 w-full object-cover sm:h-full"
-                                />
+                                <PourLink href={`/blog/${featured.slug}`}>
+
+                                    <img
+                                        src={urlFor(featured.mainImage)
+                                            .width(1200)
+                                            .height(900)
+                                            .url()}
+                                        alt={featured.mainImage.alt ?? ''}
+                                        className="h-64 w-full object-cover sm:h-full"
+                                    />
+                                </PourLink>
                             )}
                         </div>
                         <div className="flex flex-col justify-center gap-4 sm:col-span-2">
@@ -255,7 +278,9 @@ export default function BlogClient({ blogs, categories }: Props) {
                                 categories={safeCategories}
                             />
                             <h2 className="text-2xl leading-tight text-[#F4ECDD] sm:text-3xl">
-                                <PourLink>{featured.title}</PourLink>
+                                <PourLink href={`/blog/${featured.slug}`}>
+                                    {featured.title}
+                                </PourLink>
                             </h2>
                             <p className="text-sm leading-relaxed text-[#C9A876]">
                                 {featured.excerpt}
@@ -274,11 +299,10 @@ export default function BlogClient({ blogs, categories }: Props) {
                             <button
                                 key={cat.slug}
                                 onClick={() => setActive(cat.slug)}
-                                className={`rounded-full border px-3.5 py-1.5 text-xs uppercase transition-colors cursor-pointer ${
-                                    isActive
-                                        ? 'border-[#D6F24B] bg-[#D6F24B] text-[#1B120B]'
-                                        : 'border-[#3A2A1A] text-[#C9A876] hover:border-[#C9A876]'
-                                }`}
+                                className={`rounded-full border px-3.5 py-1.5 text-xs uppercase transition-colors cursor-pointer ${isActive
+                                    ? 'border-[#D6F24B] bg-[#D6F24B] text-[#1B120B]'
+                                    : 'border-[#3A2A1A] text-[#C9A876] hover:border-[#C9A876]'
+                                    }`}
                             >
                                 {cat.title}
                             </button>
@@ -307,30 +331,35 @@ export default function BlogClient({ blogs, categories }: Props) {
                                 }}
                                 className="group flex flex-col"
                             >
+                                    <PourLink href={`/blog/${blog.slug}`}>
                                 <div className="overflow-hidden">
                                     {blog.mainImage && (
-                                        <motion.img
-                                            src={urlFor(blog.mainImage)
-                                                .width(900)
-                                                .height(700)
-                                                .url()}
-                                            alt={blog.mainImage.alt ?? ''}
-                                            className="h-44 w-full object-cover"
-                                            whileHover={{ scale: 1.04 }}
-                                            transition={{
-                                                duration: 0.4,
-                                                ease: 'easeOut',
-                                            }}
-                                        />
-                                    )}
+
+                                            <motion.img
+                                                src={urlFor(blog.mainImage)
+                                                    .width(900)
+                                                    .height(700)
+                                                    .url()}
+                                                alt={blog.mainImage.alt ?? ''}
+                                                className="h-44 w-full object-cover"
+                                                whileHover={{ scale: 1.04 }}
+                                                transition={{
+                                                    duration: 0.4,
+                                                    ease: 'easeOut',
+                                                }}
+                                            />
+                                        )}
                                 </div>
+                                        </PourLink>
                                 <div className="flex flex-1 flex-col gap-3 border-b border-dashed border-[#3A2A1A] pb-6 pt-4">
                                     <Ticket
                                         blog={blog}
                                         categories={safeCategories}
                                     />
                                     <h3 className="text-lg leading-snug text-[#F4ECDD]">
-                                        <PourLink>{blog.title}</PourLink>
+                                        <PourLink href={`/blog/${blog.slug}`}>
+                                            {blog.title}
+                                        </PourLink>
                                     </h3>
                                     <p className="line-clamp-2 text-sm leading-relaxed text-[#A8926F]">
                                         {blog.excerpt}
@@ -343,7 +372,7 @@ export default function BlogClient({ blogs, categories }: Props) {
                 </AnimatePresence>
 
                 {rest.length === 0 && (
-                    <p className="py-16 text-center text-sm text-[#C9A876]">
+                    <p className="py-16 text-center text-lg text-[#C9A876]">
                         No Blog found under "{active}" category.
                     </p>
                 )}

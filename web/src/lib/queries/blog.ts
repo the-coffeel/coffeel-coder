@@ -20,11 +20,11 @@ export type SanityBlog = {
     slug: string;
     title: string;
     excerpt: string | null;
-    category: {
+    categories: {
         title: string;
         slug: string;
         color?: string;
-    } | null;
+    }[];
     publishedAt: string;
     authors: {
         name: string;
@@ -60,11 +60,11 @@ const BLOG_PROJECTION = /* groq */ `{
     "slug": slug.current,
     title,
     excerpt,
-    "category": categories[0]->{
+    "categories": categories[]->{
         _id,
         title,
         "slug": slug.current,
-        color
+        "color": color.hex
     },
     publishedAt,
     "authors": authors[]->{
@@ -102,7 +102,7 @@ export const ALL_CATEGORIES_QUERY = groq`
         _id,
         title,
         "slug": slug.current,
-        color
+        "color": color.hex
     }
 `;
 

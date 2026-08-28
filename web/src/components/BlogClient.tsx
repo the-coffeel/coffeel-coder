@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { urlFor } from '@/lib/image';
@@ -13,11 +14,6 @@ import {
     AvatarGroup,
     AvatarImage,
 } from '@/components/ui/avatar';
-
-// ---------------------------------------------------------------------------
-// Fallback dot colors, used when a category doc doesn't set its own `color`.
-// Cycles through this palette in category order.
-// ---------------------------------------------------------------------------
 
 const FALLBACK_DOTS = [
     'bg-[#D6F24B]',
@@ -142,21 +138,38 @@ function Ticket({
     blog: SanityBlog;
     categories: SanityCategory[];
 }) {
-    const dotClass = dotClassFor(blog.category?.slug, categories);
-    const dotStyle = dotStyleFor(blog.category?.slug, categories);
+    const blogCategories = blog.categories ?? [];
+
     return (
         <span className="flex items-center gap-2 text-[11px] uppercase tracking-[0.12em] text-[#C9A876]">
             {blog.ticket && (
                 <span className="text-[#8B5E34]">{blog.ticket}</span>
             )}
             {blog.ticket && <span className="text-[#4A3826]">·</span>}
-            <span className="flex items-center gap-1.5">
-                <span
-                    className={`h-1.5 w-1.5 rounded-full ${dotClass}`}
-                    style={dotStyle}
-                />
-                {blog.category?.title ?? 'Uncategorized'}
-            </span>
+            {blogCategories.length > 0 ? (
+                blogCategories.map((category, index) => {
+                    const dotClass = dotClassFor(category.slug, categories);
+                    const dotStyle = dotStyleFor(category.slug, categories);
+
+                    return (
+                        <span
+                            key={category.slug}
+                            className="flex items-center gap-1.5"
+                        >
+                            {index > 0 && (
+                                <span className="text-[#4A3826]">/</span>
+                            )}
+                            <span
+                                className={`h-1.5 w-1.5 rounded-full ${dotClass}`}
+                                style={dotStyle}
+                            />
+                            {category.title}
+                        </span>
+                    );
+                })
+            ) : (
+                <span>Uncategorized</span>
+            )}
             <span className="text-[#4A3826]">·</span>
             <span>{formatDate(blog.publishedAt)}</span>
         </span>
@@ -217,7 +230,10 @@ type Props = {
 };
 
 export default function BlogClient({ blogs, categories }: Props) {
-    const [active, setActive] = useState<string>('All');
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const active = searchParams.get('category') || 'All';
 
     // Guard against undefined/null props (e.g. Sanity fetch not resolved yet)
     const safeBlogs = blogs ?? [];
@@ -233,7 +249,9 @@ export default function BlogClient({ blogs, categories }: Props) {
             (b) => b._id !== featured?._id,
         );
         if (active === 'All') return withoutFeatured;
-        return withoutFeatured.filter((b) => b.category?.slug === active);
+        return withoutFeatured.filter((b) =>
+            b.categories?.some((category) => category.slug === active),
+        );
     }, [active, safeBlogs, featured?._id]);
 
     const filterOptions = useMemo(
@@ -243,6 +261,21 @@ export default function BlogClient({ blogs, categories }: Props) {
         ],
         [safeCategories],
     );
+
+    function handleCategoryChange(category: string) {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (category === 'All') {
+            params.delete('category');
+        } else {
+            params.set('category', category);
+        }
+
+        const query = params.toString();
+        router.replace(query ? `${pathname}?${query}` : pathname, {
+            scroll: false,
+        });
+    }
 
     return (
         <>
@@ -260,7 +293,6 @@ export default function BlogClient({ blogs, categories }: Props) {
                         <div className="overflow-hidden sm:col-span-3">
                             {featured.mainImage && (
                                 <PourLink href={`/blog/${featured.slug}`}>
-
                                     <img
                                         src={urlFor(featured.mainImage)
                                             .width(1200)
@@ -298,11 +330,12 @@ export default function BlogClient({ blogs, categories }: Props) {
                         return (
                             <button
                                 key={cat.slug}
-                                onClick={() => setActive(cat.slug)}
-                                className={`rounded-full border px-3.5 py-1.5 text-xs uppercase transition-colors cursor-pointer ${isActive
-                                    ? 'border-[#D6F24B] bg-[#D6F24B] text-[#1B120B]'
-                                    : 'border-[#3A2A1A] text-[#C9A876] hover:border-[#C9A876]'
-                                    }`}
+                                onClick={() => handleCategoryChange(cat.slug)}
+                                className={`rounded-full border px-3.5 py-1.5 text-xs uppercase transition-colors cursor-pointer ${
+                                    isActive
+                                        ? 'border-[#D6F24B] bg-[#D6F24B] text-[#1B120B]'
+                                        : 'border-[#3A2A1A] text-[#C9A876] hover:border-[#C9A876]'
+                                }`}
                             >
                                 {cat.title}
                             </button>
@@ -331,10 +364,9 @@ export default function BlogClient({ blogs, categories }: Props) {
                                 }}
                                 className="group flex flex-col"
                             >
-                                    <PourLink href={`/blog/${blog.slug}`}>
-                                <div className="overflow-hidden">
-                                    {blog.mainImage && (
-
+                                <PourLink href={`/blog/${blog.slug}`}>
+                                    <div className="overflow-hidden">
+                                        {blog.mainImage && (
                                             <motion.img
                                                 src={urlFor(blog.mainImage)
                                                     .width(900)
@@ -349,8 +381,8 @@ export default function BlogClient({ blogs, categories }: Props) {
                                                 }}
                                             />
                                         )}
-                                </div>
-                                        </PourLink>
+                                    </div>
+                                </PourLink>
                                 <div className="flex flex-1 flex-col gap-3 border-b border-dashed border-[#3A2A1A] pb-6 pt-4">
                                     <Ticket
                                         blog={blog}

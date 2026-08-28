@@ -3,6 +3,69 @@ import Header from '@/components/Header';
 import { getBlogBySlug } from '@/lib/queries/blog';
 import { urlFor } from '@/lib/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'http://localhost:3000');
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const { slug } = await params;
+    const blog = await getBlogBySlug(slug);
+
+    if (!blog) {
+        return {
+            title: 'Blog post not found | Coffeel Coder',
+            robots: { index: false, follow: false },
+        };
+    }
+
+    const title = `${blog.title} | Coffeel Coder`;
+    const description = blog.excerpt ?? `Read ${blog.title} on Coffeel Coder.`;
+    const canonicalUrl = `${siteUrl}/blog/${blog.slug}`;
+    const imageUrl = blog.mainImage
+        ? urlFor(blog.mainImage).width(1200).height(630).url()
+        : undefined;
+
+    return {
+        title,
+        description,
+        alternates: { canonical: canonicalUrl },
+        authors: blog.authors.map((author) => ({ name: author.name })),
+        keywords: blog.categories.map((category) => category.title),
+        openGraph: {
+            title,
+            description,
+            type: 'article',
+            url: canonicalUrl,
+            publishedTime: blog.publishedAt,
+            authors: blog.authors.map((author) => author.name),
+            section: blog.categories[0]?.title,
+            images: imageUrl
+                ? [
+                      {
+                          url: imageUrl,
+                          width: 1200,
+                          height: 630,
+                          alt: blog.mainImage?.alt ?? blog.title,
+                      },
+                  ]
+                : undefined,
+        },
+        twitter: {
+            card: imageUrl ? 'summary_large_image' : 'summary',
+            title,
+            description,
+            images: imageUrl ? [imageUrl] : undefined,
+        },
+    };
+}
 
 function BlogContent({
     content,
@@ -76,6 +139,36 @@ export default async function BlogDetailPage({
     return (
         <>
             <Header />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        '@context': 'https://schema.org',
+                        '@type': 'Article',
+                        headline: blog.title,
+                        description: blog.excerpt,
+                        datePublished: blog.publishedAt,
+                        url: `${siteUrl}/blog/${blog.slug}`,
+                        author: blog.authors.map((author) => ({
+                            '@type': 'Person',
+                            name: author.name,
+                        })),
+                        image: blog.mainImage
+                            ? [
+                                  urlFor(blog.mainImage)
+                                      .width(1200)
+                                      .height(630)
+                                      .url(),
+                              ]
+                            : undefined,
+                        publisher: {
+                            '@type': 'Organization',
+                            name: 'Coffeel Coder',
+                            url: siteUrl,
+                        },
+                    }),
+                }}
+            />
             <main className="mx-auto max-w-4xl px-6 py-16 sm:px-10">
                 <Link
                     href="/blog"
@@ -84,7 +177,9 @@ export default async function BlogDetailPage({
                     Back to blog
                 </Link>
                 <p className="mt-10 text-xs uppercase tracking-[0.12em] text-[#C9A876]">
-                    {blog.category?.title ?? 'Uncategorized'}
+                    {blog.categories
+                        ?.map((category) => category.title)
+                        .join(' / ') || 'Uncategorized'}
                 </p>
                 <h1 className="mt-4 text-4xl leading-tight text-[#F4ECDD] sm:text-6xl">
                     {blog.title}

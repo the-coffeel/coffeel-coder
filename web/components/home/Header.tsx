@@ -77,7 +77,7 @@ export default function Header({
           <div className="hidden md:flex items-center gap-3">
             {!user ? (
               <motion.a
-                href="#join"
+                href="auth/login"
                 className="px-5 py-2 text-sm font-semibold border border-amber-600 text-amber-400 transition-colors"
                 whileHover={{ backgroundColor: "#d97706", color: "#ffffff" }}
                 whileTap={{ scale: 0.95 }}
@@ -87,13 +87,13 @@ export default function Header({
             ) : (
               <>
                 <motion.a
-                  href="#join"
+                  href="/profile/posts/new"
                   className="px-5 py-2 text-sm font-semibold border border-amber-600 text-amber-400 transition-colors"
                   whileHover={{ backgroundColor: "#d97706", color: "#ffffff" }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <Rocket className="inline-block w-4 h-4 mr-2" />
-                  Luanch Place
+                  Launch Place
                 </motion.a>
                 <motion.a
                   href="#join"

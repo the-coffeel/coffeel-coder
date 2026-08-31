@@ -7,9 +7,9 @@ import { useMutation } from '@tanstack/react-query';
 import {
     ArticleEditor,
     ArticleEditorValue,
-} from '@/app/profile/articles/components/ArticleEditor';
-import { ArticleEditorHeader } from '@/app/profile/articles/components/ArticleEditorHeader';
-import { updatePostAction } from '@/app/profile/articles/actions';
+} from '@/app/profile/posts/components/ArticleEditor';
+import { ArticleEditorHeader } from '@/app/profile/posts/components/ArticleEditorHeader';
+import { updatePostAction } from '@/app/profile/posts/actions';
 import { createClient } from '@/lib/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -114,7 +114,7 @@ export default function EditArticlePage({ postId }: EditArticlePageProps) {
     }
 
     return (
-        <main className='border-r'>
+        <main className="border-r">
             <ArticleEditorHeader
                 value={value}
                 isUpdate

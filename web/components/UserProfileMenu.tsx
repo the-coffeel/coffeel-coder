@@ -147,7 +147,7 @@ export function UserProfileMenu({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <Link href={`/profile/articles/create`} className="cursor-pointer">
+          <Link href={`/profile/posts/new`} className="cursor-pointer">
             <Rocket className="mr-2 h-4 w-4" />
             Launch Place
             <div className="grow flex justify-end">

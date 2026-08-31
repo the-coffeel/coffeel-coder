@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ArticleEditor,
     ArticleEditorValue,
-} from '@/app/profile/articles/components/ArticleEditor';
+} from '@/app/profile/posts/components/ArticleEditor';
 import { useMutation } from '@tanstack/react-query';
-import { ArticleEditorHeader } from '@/app/profile/articles/components/ArticleEditorHeader';
-import { createPostAction } from '@/app/profile/articles/actions';
+import { ArticleEditorHeader } from '@/app/profile/posts/components/ArticleEditorHeader';
+import { createPostAction } from '@/app/profile/posts/actions';
 import { useRouter } from 'next/navigation';
 
 export default function BlogPage() {
@@ -59,17 +59,19 @@ export default function BlogPage() {
     }, [value, saveArticle]);
 
     return (
-        <main className='border-r'>
-            <ArticleEditorHeader
-                value={value}
-                onSaveDraft={handleSaveDraft}
-                onPublish={handlePublish}
-                loading={isPending}
-                errorMessage={error?.message}
-            />
+        <main className="border-r">
+            <div className="max-w-7xl mx-auto grid lg:grid-cols-1">
+                <ArticleEditorHeader
+                    value={value}
+                    onSaveDraft={handleSaveDraft}
+                    onPublish={handlePublish}
+                    loading={isPending}
+                    errorMessage={error?.message}
+                />
 
-            <div className="p-4">
-                <ArticleEditor onChange={setValue} value={value} />
+                <div className="p-4">
+                    <ArticleEditor onChange={setValue} value={value} />
+                </div>
             </div>
         </main>
     );

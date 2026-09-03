@@ -1,51 +1,51 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'Red Hat Display';
-  src: url('/fonts/RedHatDisplay.ttf') format('truetype');
+  font-family: "Red Hat Display";
+  src: url("/fonts/RedHatDisplay.ttf") format("truetype");
   font-weight: 300 900;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Red Hat Mono';
-  src: url('/fonts/RedHatMono.ttf') format('truetype');
+  font-family: "Red Hat Mono";
+  src: url("/fonts/RedHatMono.ttf") format("truetype");
   font-weight: 300 900;
   font-style: normal;
 }
 
 :root {
-  --background: #F8FAFF;
-  --foreground: #1E293B;
-  --card: #FFFFFF;
-  --card-foreground: #1E293B;
-  --popover: #FFFFFF;
-  --popover-foreground: #1E293B;
-  --primary: #4F8EF7;
-  --primary-hover: #3D7FE8;
-  --primary-foreground: #FFFFFF;
-  --secondary: #E8F1FF;
-  --secondary-hover: #DCE9FF;
-  --secondary-foreground: #1E293B;
-  --muted: #F2F6FC;
-  --muted-foreground: #94A3B8;
-  --accent: #7C6FF2;
-  --accent-hover: #6D60E5;
-  --accent-foreground: #FFFFFF;
-  --destructive: #E87575;
-  --destructive-foreground: #FFFFFF;
-  --border: #E5EAF2;
-  --input: #E5EAF2;
-  --ring: #4F8EF7;
-  
-  --text-secondary: #64748B;
-  --text-muted: #94A3B8;
-  --surface-soft: #F2F6FC;
+  --background: #f8faff;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  --primary: #4f8ef7;
+  --primary-hover: #3d7fe8;
+  --primary-foreground: #ffffff;
+  --secondary: #e8f1ff;
+  --secondary-hover: #dce9ff;
+  --secondary-foreground: #1e293b;
+  --muted: #f2f6fc;
+  --muted-foreground: #94a3b8;
+  --accent: #7c6ff2;
+  --accent-hover: #6d60e5;
+  --accent-foreground: #ffffff;
+  --destructive: #e87575;
+  --destructive-foreground: #ffffff;
+  --border: #e5eaf2;
+  --input: #e5eaf2;
+  --ring: #4f8ef7;
 
-  --success: #4DBB84;
-  --warning: #F2B84B;
-  --error: #E87575;
-  --info: #5B9BE8;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --surface-soft: #f2f6fc;
+
+  --success: #4dbb84;
+  --warning: #f2b84b;
+  --error: #e87575;
+  --info: #5b9be8;
 
   --chart-1: #f97316;
   --chart-2: #10b981;
@@ -56,48 +56,48 @@
 }
 
 .dark {
-  --background: #0F172A;
-  --foreground: #F8FAFF;
-  --card: #1E293B;
-  --card-foreground: #F8FAFF;
-  --popover: #1E293B;
-  --popover-foreground: #F8FAFF;
-  --primary: #4F8EF7;
-  --primary-hover: #3D7FE8;
-  --primary-foreground: #FFFFFF;
+  --background: #0f172a;
+  --foreground: #f8faff;
+  --card: #1e293b;
+  --card-foreground: #f8faff;
+  --popover: #1e293b;
+  --popover-foreground: #f8faff;
+  --primary: #4f8ef7;
+  --primary-hover: #3d7fe8;
+  --primary-foreground: #ffffff;
   --secondary: #334155;
   --secondary-hover: #475569;
-  --secondary-foreground: #F8FAFF;
-  --muted: #1E293B;
-  --muted-foreground: #94A3B8;
-  --accent: #7C6FF2;
-  --accent-hover: #6D60E5;
-  --accent-foreground: #FFFFFF;
-  --destructive: #E87575;
-  --destructive-foreground: #FFFFFF;
+  --secondary-foreground: #f8faff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #7c6ff2;
+  --accent-hover: #6d60e5;
+  --accent-foreground: #ffffff;
+  --destructive: #e87575;
+  --destructive-foreground: #ffffff;
   --border: #334155;
   --input: #334155;
-  --ring: #4F8EF7;
+  --ring: #4f8ef7;
 
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --surface-soft: #1E293B;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --surface-soft: #1e293b;
 
-  --success: #4DBB84;
-  --warning: #F2B84B;
-  --error: #E87575;
-  --info: #5B9BE8;
+  --success: #4dbb84;
+  --warning: #f2b84b;
+  --error: #e87575;
+  --info: #5b9be8;
 
-  --chart-1: #4F8EF7;
-  --chart-2: #4DBB84;
-  --chart-3: #F2B84B;
-  --chart-4: #7C6FF2;
-  --chart-5: #E87575;
+  --chart-1: #4f8ef7;
+  --chart-2: #4dbb84;
+  --chart-3: #f2b84b;
+  --chart-4: #7c6ff2;
+  --chart-5: #e87575;
 }
 
 @theme inline {
-  --font-sans: 'Red Hat Display', sans-serif;
-  --font-mono: 'Red Hat Mono', monospace;
+  --font-sans: "Red Hat Display", sans-serif;
+  --font-mono: "Red Hat Mono", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

@@ -10,6 +10,7 @@ import {
     MoreHorizontal,
     Pencil,
     Trash2,
+    StepForward,
 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -176,7 +177,12 @@ export default function PostActions({
 
     return (
         <>
-            <div className="flex items-center justify-between text-muted-foreground">
+            <div className="flex items-center justify-end gap-2 text-muted-foreground">
+                <Button variant="ghost" size="sm" className="gap-2" disabled>
+                    <MessageSquareQuote className="h-5 w-5" />
+                    <span className="text-xs font-medium">{repliesCount}</span>
+                </Button>
+
                 <Button
                     variant="ghost"
                     size="sm"
@@ -189,21 +195,12 @@ export default function PostActions({
                     disabled={isTogglingLike}
                     title={isLiked ? 'Unlike' : 'Like'}
                 >
-                    <Rocket
+                    <StepForward
                         className={`h-5 w-5 transition-transform active:scale-125 ${
                             isLiked ? 'fill-rose-600 text-rose-600' : ''
                         }`}
                     />
-                    <span className="text-xs">{likeCount}</span>
-                </Button>
-
-                <Button variant="ghost" size="sm" className="gap-2" disabled>
-                    <MessageSquareQuote className="h-6 w-6" />
-                    <span className="text-xs">{repliesCount}</span>
-                </Button>
-
-                <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-                    <Bookmark className="h-6 w-6" />
+                    <span className="text-xs font-medium">{likeCount}</span>
                 </Button>
 
                 <DropdownMenu modal={false}>
@@ -211,16 +208,21 @@ export default function PostActions({
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-8 w-8 ml-1"
                         >
-                            <MoreHorizontal className="h-6 w-6" />
+                            <MoreHorizontal className="h-5 w-5" />
                         </Button>
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent
-                        align="start"
+                        align="end"
                         style={{ width: '180px' }}
                     >
+                        <DropdownMenuItem disabled>
+                            <Bookmark className="mr-2 h-4 w-4" />
+                            Bookmark
+                        </DropdownMenuItem>
+
                         <DropdownMenuItem asChild>
                             <Link
                                 href={`/post/${postId}`}

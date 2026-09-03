@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { fadeUp, slideInLeft, slideInRight } from "@/lib/motion";
+import { ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -51,7 +52,7 @@ export default function HeroSection() {
 
             {/* Subtext */}
             <motion.p
-              className="text-base md:text-lg text-[#a89880] max-w-md leading-relaxed"
+              className="text-base md:text-lg text-muted-foreground max-w-md leading-relaxed"
               variants={fadeUp}
               custom={2}
             >
@@ -66,8 +67,7 @@ export default function HeroSection() {
             >
               <motion.a
                 href="#join"
-                className="px-6 py-3 bg-amber-500 text-[#0d0d0d] font-bold text-sm"
-                whileHover={{ scale: 1.05, backgroundColor: "#fbbf24" }}
+                className="px-6 py-3 bg-primary text-primary-foreground font-medium text-sm"
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
@@ -75,12 +75,12 @@ export default function HeroSection() {
               </motion.a>
               <motion.a
                 href="#services"
-                className="px-6 py-3 border border-[#6f4e37]/60 text-[#c4b49a] font-medium text-sm"
-                whileHover={{ borderColor: "#d97706", color: "#fbbf24", scale: 1.03 }}
+                className="flex items-center gap-1 px-6 py-3 border border-accent text-primary-foreground hover:bg-accent font-medium text-sm ease-out duration-300 transition-colors"
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
-                Find Fit Coffee Shops →
+                Find Fit Coffee Shops
+                <ArrowRight size={18} />
               </motion.a>
             </motion.div>
 

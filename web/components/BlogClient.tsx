@@ -297,6 +297,8 @@ export default function BlogClient({ blogs, categories }: Props) {
                                             .url()}
                                         alt={featured.mainImage.alt ?? ''}
                                         className="h-64 w-full object-cover sm:h-full"
+                                        width={1200}
+                                        height={900}
                                     />
                                 </PourLink>
                             )}

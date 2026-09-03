@@ -87,7 +87,7 @@ export default function PostCard({
         post.is_liked ??
         Boolean(
             currentUserId &&
-                post.post_likes?.some((l) => l.user_id === currentUserId),
+            post.post_likes?.some((l) => l.user_id === currentUserId),
         );
 
     const likesCount =
@@ -134,12 +134,12 @@ export default function PostCard({
                         {timeAgo(post.created_at)}
                     </div>
                     {!post.published && <Badge className='bg-sky-300 hover:bg-sky-400 shadow-none rounded-none'>Draft</Badge>}
-                    
+
                 </div>
 
             </div>
 
-            <div 
+            <div
                 className="cursor-pointer"
                 onClick={(e) => {
                     const target = e.target as HTMLElement;
@@ -147,7 +147,7 @@ export default function PostCard({
                     router.push(`/post/${post.id}`);
                 }}
             >
-                <div className={`text-md leading-relaxed break-words [&_a]:text-indigo-600 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-2 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic ${!isExpanded ? 'line-clamp-3' : ''}`}>
+                <div className={`text-md leading-relaxed wrap-break-word [&_a]:text-indigo-600 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-2 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_img]:float-left [&_img]:mr-4 [&_img]:mb-2 [&_img]:w-24 [&_img]:h-24 [&_img]:sm:w-32 [&_img]:sm:h-32 [&_img]:object-cover [&_img]:rounded-md ${!isExpanded ? 'line-clamp-3' : ''}`}>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{

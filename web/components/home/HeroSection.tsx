@@ -5,11 +5,11 @@ import { fadeUp, slideInLeft, slideInRight } from "@/lib/motion";
 
 export default function HeroSection() {
   return (
-    <section className="relative border-b border-[#6f4e37]/30 overflow-hidden">
+    <section className="relative border-b border-border overflow-hidden">
       {/* Grid border lines */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8">
-          <div className="h-full border-x border-[#6f4e37]/20" />
+          <div className="h-full border-x border-border" />
         </div>
       </div>
 
@@ -25,27 +25,27 @@ export default function HeroSection() {
           >
             {/* Eyebrow */}
             <motion.p
-              className="font-mono text-xs uppercase tracking-widest text-amber-500"
+              className="font-mono font-medium tracking-widest text-accent"
               variants={fadeUp}
               custom={0}
             >
-              {"// community & agency"}
+              // community & agency
             </motion.p>
 
             {/* Headline */}
             <motion.h1
-              className="text-4xl md:text-5xl lg:text-[3.2rem] font-bold leading-[1.08] text-[#f5f0e8] text-balance"
+              className="text-4xl md:text-5xl lg:text-[3.2rem] font-bold text-foreground text-balance"
               variants={fadeUp}
               custom={1}
             >
-              The Developer Community &amp; Digital Agency Powered by{" "}
+              The Developer Community & Digital Agency Powered by{" "}
               <motion.span
-                className="text-amber-400 inline-block"
+                className="text-primary inline-block"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                Coffee &amp; Code.
+                Coffee & Code.
               </motion.span>
             </motion.h1>
 

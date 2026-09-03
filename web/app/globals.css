@@ -1,67 +1,148 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
+@font-face {
+  font-family: 'Red Hat Display';
+  src: url('/fonts/RedHatDisplay.ttf') format('truetype');
+  font-weight: 300 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Red Hat Mono';
+  src: url('/fonts/RedHatMono.ttf') format('truetype');
+  font-weight: 300 900;
+  font-style: normal;
+}
+
+:root {
+  --background: #F8FAFF;
+  --foreground: #1E293B;
+  --card: #FFFFFF;
+  --card-foreground: #1E293B;
+  --popover: #FFFFFF;
+  --popover-foreground: #1E293B;
+  --primary: #4F8EF7;
+  --primary-hover: #3D7FE8;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E8F1FF;
+  --secondary-hover: #DCE9FF;
+  --secondary-foreground: #1E293B;
+  --muted: #F2F6FC;
+  --muted-foreground: #94A3B8;
+  --accent: #7C6FF2;
+  --accent-hover: #6D60E5;
+  --accent-foreground: #FFFFFF;
+  --destructive: #E87575;
+  --destructive-foreground: #FFFFFF;
+  --border: #E5EAF2;
+  --input: #E5EAF2;
+  --ring: #4F8EF7;
+  
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --surface-soft: #F2F6FC;
+
+  --success: #4DBB84;
+  --warning: #F2B84B;
+  --error: #E87575;
+  --info: #5B9BE8;
+
+  --chart-1: #f97316;
+  --chart-2: #10b981;
+  --chart-3: #3b82f6;
+  --chart-4: #eab308;
+  --chart-5: #f43f5e;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: #0F172A;
+  --foreground: #F8FAFF;
+  --card: #1E293B;
+  --card-foreground: #F8FAFF;
+  --popover: #1E293B;
+  --popover-foreground: #F8FAFF;
+  --primary: #4F8EF7;
+  --primary-hover: #3D7FE8;
+  --primary-foreground: #FFFFFF;
+  --secondary: #334155;
+  --secondary-hover: #475569;
+  --secondary-foreground: #F8FAFF;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #7C6FF2;
+  --accent-hover: #6D60E5;
+  --accent-foreground: #FFFFFF;
+  --destructive: #E87575;
+  --destructive-foreground: #FFFFFF;
+  --border: #334155;
+  --input: #334155;
+  --ring: #4F8EF7;
+
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --surface-soft: #1E293B;
+
+  --success: #4DBB84;
+  --warning: #F2B84B;
+  --error: #E87575;
+  --info: #5B9BE8;
+
+  --chart-1: #4F8EF7;
+  --chart-2: #4DBB84;
+  --chart-3: #F2B84B;
+  --chart-4: #7C6FF2;
+  --chart-5: #E87575;
+}
+
+@theme inline {
+  --font-sans: 'Red Hat Display', sans-serif;
+  --font-mono: 'Red Hat Mono', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-surface-soft: var(--surface-soft);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius: 0.5rem;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

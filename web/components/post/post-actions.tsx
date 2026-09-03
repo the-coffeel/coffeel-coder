@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import {
     Bookmark,
     Eye,
-    Rocket,
     Link2,
     MessageSquareQuote,
     MoreHorizontal,

@@ -20,6 +20,7 @@ export type Profile = {
 
 export type Post = {
     id: string | number;
+    title?: string;
     user_id?: string;
     profile?: Profile | null;
     content?: string;
@@ -140,7 +141,9 @@ export default function PostCard({
 
             </div>
 
-            {post.cover_image_url && <Link href={`/post/${post.id}`}><Image src={post.cover_image_url} width={500} height={300} alt={`cover of coffee shop`} className='w-full'/></Link>}
+            {post.title && <p className="text-xl font-medium mb-2">{post.title}</p>}
+
+            {post.cover_image_url && <Link href={`/post/${post.id}`}><Image src={post.cover_image_url} width={500} height={300} alt={`cover of coffee shop`} className='w-full max-h-110 object-cover'/></Link>}
 
             <div 
                 className="cursor-pointer"

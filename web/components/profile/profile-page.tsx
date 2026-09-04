@@ -171,11 +171,11 @@ function ProfilePageContent() {
         <section className="border-b border-[#6f4e37]/30 relative">
             <div className="absolute inset-0 pointer-events-none">
                 <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8">
-                    <div className="h-full border-x border-[#6f4e37]/20" />
+                    <div className="h-full border-[#6f4e37]/20" />
                 </div>
             </div>
 
-            <main className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8 grid lg:grid-cols-1">
+            <main className="max-w-4xl mx-auto px-0 sm:px-6 lg:px-8 grid lg:grid-cols-1">
                 {profile === null && (
                     <div className="space-y-4 px-5 py-5">
                         <Skeleton className="h-40 w-full rounded-xl" />
@@ -288,7 +288,7 @@ function ProfilePageContent() {
                                 </p>
                             )}
                         </div>
-                        <div className="border-b">
+                        <div className="">
                             <div className="px-4 flex gap-6 text-sm">
                                 {TABS.map((tab) => (
                                     <button
@@ -306,10 +306,7 @@ function ProfilePageContent() {
                         </div>
 
                         {activeTab === 'Activity' && (
-                            <div className="">
-                                <p className="px-5 py-2 text-sm font-semibold">
-                                    Posts
-                                </p>
+                            <div className="max-w-xl mx-auto divide-y mt-4">
 
                                 {posts === null &&
                                     Array.from({ length: 2 }).map((_, i) => (
@@ -328,7 +325,7 @@ function ProfilePageContent() {
                                     </div>
                                 )}
 
-                                <div className="divide-y">
+                                <div className="">
                                     {posts?.map((post) => (
                                         <PostCard
                                             key={post.id}

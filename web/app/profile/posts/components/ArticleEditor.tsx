@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import StoragePage from '@/components/storage/Storage-page';
 import Image from 'next/image';
+import { Input } from '@/components/ui/input';
 
 export interface ArticleEditorValue {
     title: string;
@@ -47,6 +48,13 @@ export function ArticleEditor({ value, onChange }: ArticleEditorProps) {
                     value={value.cover_image_url}
                     onChange={handleImageChange}
                 />
+
+                <Input
+                    placeholder="Article Title"
+                    value={value.title}
+                    onChange={(e) => onChange((prev) => ({ ...prev, title: e.target.value }))}
+                />
+
                 <MarkdownEditor
                     value={value.content}
                     onChange={handleContentChange}
@@ -100,7 +108,7 @@ function ArticleEditorImageInput({
             </Dialog>
 
             {value ? (
-                <div className="relative h-72 overflow-hidden">
+                <div className="relative h-96 overflow-hidden">
                     <Image
                         src={value}
                         alt="Article Image"

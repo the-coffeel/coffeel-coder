@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import {
-    Bookmark,
     Eye,
-    Rocket,
     Link2,
     MessageSquareQuote,
     MoreHorizontal,
     Pencil,
     Trash2,
+    ArrowUp,
+    Star,
 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -147,49 +147,22 @@ export default function PostActions({
         }
     }
 
-    const handleGetEmbed = async () => {
-        const embedUrl = `${window.location.origin}/embed/${postId}`
-
-        const embedCode = `<iframe
-  src="${embedUrl}"
-  width="500"
-  height="300"
-  frameborder="0"
-  loading="lazy"
-  title="Embedded post"
-></iframe>`
-
-        try {
-            await navigator.clipboard.writeText(embedCode)
-
-            toast.success('Embed code copied', {
-                description: 'The embed code has been copied to your clipboard.',
-            })
-        } catch (error) {
-            console.error('Failed to copy embed code:', error)
-
-            toast.error('Failed to copy embed code', {
-                description: 'Something went wrong. Please try again.',
-            })
-        }
-    }
-
     return (
         <>
             <div className="flex items-center justify-between text-muted-foreground">
                 <Button
                     variant="ghost"
                     size="sm"
-                    className={`gap-2 transition-colors ${
+                    className={`gap-2 transition-colors border  ${
                         isLiked
-                            ? 'text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30'
+                            ? 'text-rose-600 hover:text-rose-700 bg-rose-100'
                             : 'text-muted-foreground hover:text-rose-600'
                     }`}
                     onClick={handleToggleLike}
                     disabled={isTogglingLike}
                     title={isLiked ? 'Unlike' : 'Like'}
                 >
-                    <Rocket
+                    <ArrowUp
                         className={`h-5 w-5 transition-transform active:scale-125 ${
                             isLiked ? 'fill-rose-600 text-rose-600' : ''
                         }`}
@@ -197,13 +170,14 @@ export default function PostActions({
                     <span className="text-xs">{likeCount}</span>
                 </Button>
 
-                <Button variant="ghost" size="sm" className="gap-2" disabled>
-                    <MessageSquareQuote className="h-6 w-6" />
-                    <span className="text-xs">{repliesCount}</span>
+                <Button variant="ghost" size="icon" className="h-8 w-auto" title='rating'>
+                    <Star className="h-6 w-6" />
+                    <span className="text-xs">8/<small>10</small></span>
                 </Button>
 
-                <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-                    <Bookmark className="h-6 w-6" />
+                <Button variant="ghost" size="sm" className="gap-2" title='reviews'>
+                    <MessageSquareQuote className="h-6 w-6" />
+                    <span className="text-xs">{repliesCount}</span>
                 </Button>
 
                 <DropdownMenu modal={false}>
@@ -237,14 +211,6 @@ export default function PostActions({
                         >
                             <Link2 className="mr-2 h-4 w-4" />
                             Copy link
-                        </DropdownMenuItem>
-
-                        <DropdownMenuItem
-                            onClick={handleGetEmbed}
-                            className="cursor-pointer"
-                        >
-                            <Link2 className="mr-2 h-4 w-4" />
-                            Get embed code
                         </DropdownMenuItem>
 
                         {isOwner && (

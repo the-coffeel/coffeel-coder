@@ -100,7 +100,7 @@ function ArticleEditorImageInput({
             </Dialog>
 
             {value ? (
-                <div className="relative h-72 overflow-hidden hidden">
+                <div className="relative h-72 overflow-hidden">
                     <Image
                         src={value}
                         alt="Article Image"
@@ -124,7 +124,7 @@ function ArticleEditorImageInput({
                     </Button>
                 </div>
             ) : (
-                <div className="h-64 items-center justify-center flex-col gap-2 hidden">
+                <div className="h-64 items-center justify-center flex-col gap-2">
                     <div className="text-gray-500 text-sm">
                         Upload your image or browse existing uploaded file
                     </div>

@@ -98,20 +98,20 @@ export default function FeedList() {
     <section className="border-b border-[#6f4e37]/30 relative">
       <div className="absolute inset-0 pointer-events-none">
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8">
-          <div className="h-full border-x border-[#6f4e37]/20" />
+          <div className="h-full" />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8 grid lg:grid-cols-[240px_minmax(0,1fr)]">
-        <aside className="border-r py-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto grid-1">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 lg:px-8 grid gap-4 lg:grid-cols-[240px_minmax(0,1fr)] pt-4">
+        <aside className="lg:sticky lg:top-20 lg:h-screen lg:overflow-y-auto grid-1">
           <div className="flex flex-col gap-6">
-            <h2 className="text-lg font-semibold text-[#f5f0e8] px-4">Category</h2>
+            <h2 className="text-lg font-semibold px-4">Category</h2>
             <div className="space-y-2">
               <div className="flex flex-col gap-2">
-                <Link href="#community" className="text-sm text-[#c4b49a] hover:text-[#f5f0e8] hover:bg-[#6f4e37]/20 px-4 py-1 rounded transition-colors">Best places to code</Link>
-                <Link href="/places" className="text-sm text-[#c4b49a] hover:text-[#f5f0e8] hover:bg-[#6f4e37]/20 px-4 py-1 rounded transition-colors">Best places to study</Link>
-                <Link href="/projects" className="text-sm text-[#c4b49a] hover:text-[#f5f0e8] hover:bg-[#6f4e37]/20 px-4 py-1 rounded transition-colors">Developer-friendly locations</Link>
-                <Link href="#events" className="text-sm text-[#c4b49a] hover:text-[#f5f0e8] hover:bg-[#6f4e37]/20 px-4 py-1 rounded transition-colors">Introvert Place</Link>
+                <Link href="#community" className="text-sm  hover:bg-[#6f4e37]/20 px-4 py-1 rounded transition-colors">Best places to code</Link>
+                <Link href="/places" className="text-sm  hover:bg-[#6f4e37]/20 px-4 py-1 rounded transition-colors">Best places to study</Link>
+                <Link href="/projects" className="text-sm  hover:bg-[#6f4e37]/20 px-4 py-1 rounded transition-colors">Developer-friendly locations</Link>
+                <Link href="#events" className="text-sm  hover:bg-[#6f4e37]/20 px-4 py-1 rounded transition-colors">Introvert Place</Link>
               </div>
             </div>
           </div>
@@ -124,7 +124,7 @@ export default function FeedList() {
             </div>
           )}
 
-          <div className="divide-y border-b">
+          <div className="divide-y border">
             {notes === null &&
               Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="space-y-3 px-5 py-5">
@@ -147,13 +147,13 @@ export default function FeedList() {
             )}
 
             {notes?.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                currentUserId={currentUserId}
-                isOwner={Boolean(currentUserId && currentUserId === post.user_id)}
-              />
-            ))}
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  currentUserId={currentUserId}
+                  isOwner={Boolean(currentUserId && currentUserId === post.user_id)}
+                />
+              ))}
           </div>
         </aside>
       </div>

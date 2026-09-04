@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import PostActions from './post/post-actions';
+import Image from 'next/image';
 
 export type Profile = {
     username?: string;
@@ -97,7 +98,7 @@ export default function PostCard({
         0;
 
     return (
-        <article className="px-5 py-5">
+        <article className="p-2">
             <div className="mb-2 flex items-start justify-between">
                 <div className="flex items-center gap-3">
                     <Link
@@ -138,6 +139,8 @@ export default function PostCard({
                 </div>
 
             </div>
+
+            {post.cover_image_url && <Link href={`/post/${post.id}`}><Image src={post.cover_image_url} width={500} height={300} alt={`cover of coffee shop`} className='w-full'/></Link>}
 
             <div 
                 className="cursor-pointer"

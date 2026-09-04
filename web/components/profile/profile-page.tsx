@@ -151,7 +151,7 @@ function ProfilePageContent() {
     }, [supabase]);
 
     const handleEditPost = useCallback((postId: string | number) => {
-        router.push(`/profile/articles/edit/${postId}`);
+        router.push(`/profile/posts/edit/${postId}`);
     }, [router]);
 
     const toggleFollow = async () => {

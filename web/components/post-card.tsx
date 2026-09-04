@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Hourglass } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import PostActions from './post/post-actions';
+import { Button } from './ui/button';
 
 export type Profile = {
     username?: string;
@@ -97,14 +98,14 @@ export default function PostCard({
         0;
 
     return (
-        <article className="px-5 py-5">
+        <article className="px-5 py-5 bg-muted-foreground/10 hover:bg-muted-foreground/20 transition-colors duration-300 rounded-2xl m-2">
             <div className="mb-2 flex items-start justify-between">
                 <div className="flex items-center gap-3">
                     <Link
                         href={`/@${handle}`}
                         className="flex items-center gap-3"
                     >
-                        <Avatar className="h-12 w-12 rounded-md">
+                        <Avatar className="h-12 w-12 rounded-full">
                             <AvatarImage
                                 src={post.profile?.avatar_url}
                                 alt={name}
@@ -117,11 +118,11 @@ export default function PostCard({
                         </Avatar>
 
                         <div>
-                            <p className="text-sm font-semibold leading-tight">
+                            <p className="font-semibold leading-tight">
                                 {name}
                             </p>
 
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-sm text-muted-foreground">
                                 @{handle}
                             </p>
                         </div>
@@ -129,8 +130,8 @@ export default function PostCard({
                 </div>
 
                 <div className="flex gap-4">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Hourglass className="h-3 w-3" />
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                        <Clock size={16} />
                         {timeAgo(post.created_at)}
                     </div>
                     {!post.published && <Badge className='bg-sky-300 hover:bg-sky-400 shadow-none rounded-none'>Draft</Badge>}
@@ -170,16 +171,16 @@ export default function PostCard({
             </div>
 
             {(text.length > 300 || text.split('\n').length > 6) && (
-                <button
+                <Button
+                    variant="link"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         setIsExpanded(!isExpanded);
                     }}
-                    className="text-sm font-medium text-muted-foreground hover:text-indigo-600 hover:underline"
                 >
                     {isExpanded ? 'Show less' : 'Show more'}
-                </button>
+                </Button>
             )}
 
             {tags.length > 0 && (

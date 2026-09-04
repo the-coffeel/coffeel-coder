@@ -54,6 +54,7 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith("/auth") &&
     !request.nextUrl.pathname.startsWith("/feed") &&
     !request.nextUrl.pathname.startsWith("/about") &&
+    !request.nextUrl.pathname.startsWith("/places") &&
     !request.nextUrl.pathname.startsWith("/@") &&
     !request.nextUrl.pathname.startsWith("/post/") && 
     !request.nextUrl.pathname.startsWith("/blog/") && 

@@ -177,39 +177,42 @@ export default function PostActions({
     return (
         <>
             <div className="flex items-center justify-end gap-2 text-muted-foreground">
-                <Button variant="ghost" size="sm" className="gap-2" disabled>
-                    <MessageSquareQuote className="h-5 w-5" />
-                    <span className="text-xs font-medium">{repliesCount}</span>
-                </Button>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                    <Button variant="ghost" size="icon" disabled>
+                        <MessageSquareQuote size={18} />
+                    </Button>
+                    <span className="font-medium">{repliesCount}</span>
+                </div>
 
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`gap-2 transition-colors ${
-                        isLiked
-                            ? 'text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30'
-                            : 'text-muted-foreground hover:text-rose-600'
-                    }`}
-                    onClick={handleToggleLike}
-                    disabled={isTogglingLike}
-                    title={isLiked ? 'Unlike' : 'Like'}
-                >
-                    <StepForward
-                        className={`h-5 w-5 transition-transform active:scale-125 ${
-                            isLiked ? 'fill-rose-600 text-rose-600' : ''
-                        }`}
-                    />
-                    <span className="text-xs font-medium">{likeCount}</span>
-                </Button>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className={`transition-colors ${isLiked
+                            ? 'text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30'
+                            : 'text-muted-foreground'
+                            }`}
+                        onClick={handleToggleLike}
+                        disabled={isTogglingLike}
+                        title={isLiked ? 'Unlike' : 'Like'}
+                    >
+                        <StepForward
+                            size={18}
+                            className={`transition-transform -rotate-90 active:scale-125 ${isLiked ? 'fill-rose-600 text-rose-600' : ''
+                                }`}
+                        />
+                    </Button>
+                    <span className="font-medium">{likeCount}</span>
+                </div>
 
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 ml-1"
+                            className="ml-1"
                         >
-                            <MoreHorizontal className="h-5 w-5" />
+                            <MoreHorizontal size={18} />
                         </Button>
                     </DropdownMenuTrigger>
 
@@ -218,7 +221,7 @@ export default function PostActions({
                         style={{ width: '180px' }}
                     >
                         <DropdownMenuItem disabled>
-                            <Bookmark className="mr-2 h-4 w-4" />
+                            <Bookmark size={18} className="mr-2" />
                             Bookmark
                         </DropdownMenuItem>
 
@@ -227,7 +230,7 @@ export default function PostActions({
                                 href={`/post/${postId}`}
                                 className="cursor-pointer"
                             >
-                                <Eye className="mr-2 h-4 w-4" />
+                                <Eye size={18} className="mr-2" />
                                 View post
                             </Link>
                         </DropdownMenuItem>
@@ -236,7 +239,7 @@ export default function PostActions({
                             onClick={handleCopyLink}
                             className="cursor-pointer"
                         >
-                            <Link2 className="mr-2 h-4 w-4" />
+                            <Link2 size={18} className="mr-2" />
                             Copy link
                         </DropdownMenuItem>
 
@@ -244,7 +247,7 @@ export default function PostActions({
                             onClick={handleGetEmbed}
                             className="cursor-pointer"
                         >
-                            <Link2 className="mr-2 h-4 w-4" />
+                            <Link2 size={18} className="mr-2" />
                             Get embed code
                         </DropdownMenuItem>
 
@@ -256,7 +259,7 @@ export default function PostActions({
                                     onClick={onEdit}
                                     className="cursor-pointer"
                                 >
-                                    <Pencil className="mr-2 h-4 w-4" />
+                                    <Pencil size={18} className="mr-2" />
                                     Edit post
                                 </DropdownMenuItem>
 
@@ -264,7 +267,7 @@ export default function PostActions({
                                     onClick={() => setDeleteDialogOpen(true)}
                                     className="cursor-pointer text-destructive focus:text-destructive"
                                 >
-                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    <Trash2 size={18} className="mr-2" />
                                     Delete post
                                 </DropdownMenuItem>
                             </>
@@ -275,7 +278,7 @@ export default function PostActions({
 
             {/* Delete confirmation dialog */}
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <AlertDialogContent size="sm">
+                <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete post?</AlertDialogTitle>
                         <AlertDialogDescription>

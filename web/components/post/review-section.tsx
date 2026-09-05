@@ -9,6 +9,11 @@ type Review = {
     user_id: string;
     rating: number;
     comment: string;
+    positive_tags?: string[];
+    positive_comment?: string | null;
+    improvement_tags?: string[];
+    improvement_comment?: string | null;
+    feature_names?: string[];
     created_at: string;
     profile?: {
         username?: string;
@@ -41,7 +46,9 @@ export default async function ReviewSection({ postId }: { postId: string }) {
     } = await supabase.auth.getUser();
     const { data, error } = await supabase
         .from('reviews')
-        .select('id, user_id, rating, comment, created_at')
+        .select(
+            'id, user_id, rating, comment, positive_tags, positive_comment, improvement_tags, improvement_comment, created_at',
+        )
         .eq('post_id', postId)
         .order('created_at', { ascending: false });
 
@@ -59,6 +66,39 @@ export default async function ReviewSection({ postId }: { postId: string }) {
     const reviewsWithProfiles = reviews.map((review) => ({
         ...review,
         profile: profilesById.get(review.user_id) ?? null,
+    }));
+    const reviewIds = reviews.map((review) => review.id);
+    const { data: reviewFeatureRows } = reviewIds.length
+        ? await supabase
+              .from('review_features')
+              .select('review_id, feature_id')
+              .in('review_id', reviewIds)
+        : { data: [] };
+    const featureIds = (reviewFeatureRows ?? []).map((row) => row.feature_id);
+    const { data: featureRows } = featureIds.length
+        ? await supabase
+              .from('features')
+              .select('id, name')
+              .in('id', featureIds)
+        : { data: [] };
+    const featureNamesById = new Map(
+        (featureRows ?? []).map((feature) => [feature.id, feature.name]),
+    );
+    const featureCounts = new Map<string, number>();
+    const featureNamesByReview = new Map<string, string[]>();
+    for (const row of reviewFeatureRows ?? []) {
+        const name = featureNamesById.get(row.feature_id);
+        if (name) {
+            featureCounts.set(name, (featureCounts.get(name) ?? 0) + 1);
+            featureNamesByReview.set(row.review_id, [
+                ...(featureNamesByReview.get(row.review_id) ?? []),
+                name,
+            ]);
+        }
+    }
+    const reviewsWithFeatures = reviewsWithProfiles.map((review) => ({
+        ...review,
+        feature_names: featureNamesByReview.get(review.id) ?? [],
     }));
     const hasUserReview = Boolean(
         user?.id && reviews.some((review) => review.user_id === user.id),
@@ -137,7 +177,7 @@ export default async function ReviewSection({ postId }: { postId: string }) {
 
                 {reviews.length > 0 ? (
                     <div className="divide-y rounded-lg border">
-                        {reviewsWithProfiles.map((review) => {
+                        {reviewsWithFeatures.map((review) => {
                             const name =
                                 review.profile?.display_name ??
                                 review.profile?.username ??
@@ -169,9 +209,92 @@ export default async function ReviewSection({ postId }: { postId: string }) {
                                                 </time>
                                             </div>
                                             <Stars rating={review.rating} />
-                                            <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">
-                                                {review.comment}
-                                            </p>
+                                            {review.comment && (
+                                                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">
+                                                    {review.comment}
+                                                </p>
+                                            )}
+                                            {(review.positive_comment ||
+                                                review.positive_tags
+                                                    ?.length) && (
+                                                <section className="mt-3">
+                                                    <h3 className="font-medium">
+                                                        What is great
+                                                    </h3>
+                                                    {review.positive_comment && (
+                                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">
+                                                            {
+                                                                review.positive_comment
+                                                            }
+                                                        </p>
+                                                    )}
+                                                    {review.positive_tags
+                                                        ?.length ? (
+                                                        <div className="mt-2 flex flex-wrap gap-2">
+                                                            {review.positive_tags.map(
+                                                                (tag) => (
+                                                                    <span
+                                                                        key={`positive-${review.id}-${tag}`}
+                                                                        className="rounded-full border border-emerald-200 px-2 py-1 text-xs text-emerald-700"
+                                                                    >
+                                                                        + {tag}
+                                                                    </span>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    ) : null}
+                                                </section>
+                                            )}
+                                            {(review.improvement_comment ||
+                                                review.improvement_tags
+                                                    ?.length) && (
+                                                <section className="mt-4">
+                                                    <h3 className="font-medium">
+                                                        What needs improvement
+                                                    </h3>
+                                                    {review.improvement_comment && (
+                                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">
+                                                            {
+                                                                review.improvement_comment
+                                                            }
+                                                        </p>
+                                                    )}
+                                                    {review.improvement_tags
+                                                        ?.length ? (
+                                                        <div className="mt-2 flex flex-wrap gap-2">
+                                                            {review.improvement_tags.map(
+                                                                (tag) => (
+                                                                    <span
+                                                                        key={`improvement-${review.id}-${tag}`}
+                                                                        className="rounded-full border border-red-200 px-2 py-1 text-xs text-red-700"
+                                                                    >
+                                                                        - {tag}
+                                                                    </span>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    ) : null}
+                                                </section>
+                                            )}
+                                            {review.feature_names.length >
+                                                0 && (
+                                                <div className="mt-3 flex flex-wrap gap-2">
+                                                    {review.feature_names.map(
+                                                        (feature) => (
+                                                            <span
+                                                                key={`${review.id}-${feature}`}
+                                                                className="rounded-full border px-2 py-1 text-xs text-muted-foreground"
+                                                            >
+                                                                + {feature} (
+                                                                {featureCounts.get(
+                                                                    feature,
+                                                                ) ?? 0}
+                                                                )
+                                                            </span>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </article>

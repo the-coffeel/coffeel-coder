@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import ProtectedLayout from '@/components/layouts/ProtectedLayout';
 import BackButton from '@/components/back-button';
 import ReviewForm from './review-form';
+import type { ReviewQuestion } from './review-form';
 import { createClient } from '@/lib/supabase/server';
 
 interface PageProps {
@@ -27,11 +28,39 @@ export default async function ReviewPage({ params }: PageProps) {
     const { data: existingReview } = user
         ? await supabase
               .from('reviews')
-              .select('rating, comment')
+              .select(
+                  'rating, comment, positive_tags, positive_comment, improvement_tags, improvement_comment',
+              )
               .eq('post_id', id)
               .eq('user_id', user.id)
               .maybeSingle()
         : { data: null };
+    const { data: questions } = await supabase
+        .from('review_questions')
+        .select('id, title, slug, description, features(id, name, slug)')
+        .order('sort_order', { ascending: true });
+    const { data: review } = user
+        ? await supabase
+              .from('reviews')
+              .select('id')
+              .eq('post_id', id)
+              .eq('user_id', user.id)
+              .maybeSingle()
+        : { data: null };
+    const { data: selectedFeatures } = review
+        ? await supabase
+              .from('review_features')
+              .select('feature_id')
+              .eq('review_id', review.id)
+        : { data: [] };
+    const initialReviewWithFeatures = existingReview
+        ? {
+              ...existingReview,
+              feature_ids: (selectedFeatures ?? []).map(
+                  (item) => item.feature_id,
+              ),
+          }
+        : null;
 
     return (
         <ProtectedLayout>
@@ -45,7 +74,11 @@ export default async function ReviewPage({ params }: PageProps) {
                     </div>
                 </div>
                 <div className="p-5">
-                    <ReviewForm postId={id} initialReview={existingReview} />
+                    <ReviewForm
+                        postId={id}
+                        questions={(questions ?? []) as ReviewQuestion[]}
+                        initialReview={initialReviewWithFeatures}
+                    />
                 </div>
             </main>
         </ProtectedLayout>

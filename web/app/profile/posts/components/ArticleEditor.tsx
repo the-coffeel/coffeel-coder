@@ -12,6 +12,7 @@ import {
 import StoragePage from '@/components/storage/Storage-page';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
+import ShopLocationPicker from '@/components/places/ShopLocationPicker';
 
 export interface ArticleEditorValue {
     title: string;
@@ -19,6 +20,9 @@ export interface ArticleEditorValue {
     cover_image_url: string;
     summary: string;
     content: string;
+    shop_address: string;
+    shop_latitude: number | null;
+    shop_longitude: number | null;
 }
 
 interface ArticleEditorProps {
@@ -52,12 +56,30 @@ export function ArticleEditor({ value, onChange }: ArticleEditorProps) {
                 <Input
                     placeholder="Article Title"
                     value={value.title}
-                    onChange={(e) => onChange((prev) => ({ ...prev, title: e.target.value }))}
+                    onChange={(e) =>
+                        onChange((prev) => ({ ...prev, title: e.target.value }))
+                    }
                 />
 
                 <MarkdownEditor
                     value={value.content}
                     onChange={handleContentChange}
+                />
+
+                <ShopLocationPicker
+                    value={{
+                        address: value.shop_address,
+                        latitude: value.shop_latitude,
+                        longitude: value.shop_longitude,
+                    }}
+                    onChange={(location) =>
+                        onChange((prev) => ({
+                            ...prev,
+                            shop_address: location.address,
+                            shop_latitude: location.latitude,
+                            shop_longitude: location.longitude,
+                        }))
+                    }
                 />
             </div>
         </div>
@@ -137,8 +159,12 @@ function ArticleEditorImageInput({
                         Upload your image or browse existing uploaded file
                     </div>
                     <div className="flex gap-2">
-                        <Button variant={'secondary'} onClick={openUpload}>Upload</Button>
-                        <Button variant={'secondary'} onClick={openBrowse}>Browse Your Storage</Button>
+                        <Button variant={'secondary'} onClick={openUpload}>
+                            Upload
+                        </Button>
+                        <Button variant={'secondary'} onClick={openBrowse}>
+                            Browse Your Storage
+                        </Button>
                     </div>
                 </div>
             )}

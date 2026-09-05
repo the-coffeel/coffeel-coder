@@ -16,6 +16,9 @@ export default function BlogPage() {
         cover_image_url: '',
         summary: '',
         content: '',
+        shop_address: '',
+        shop_latitude: null,
+        shop_longitude: null,
     });
 
     const router = useRouter();

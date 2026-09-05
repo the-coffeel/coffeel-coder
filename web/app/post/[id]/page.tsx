@@ -8,6 +8,7 @@ import PostActions from '@/components/post/post-actions';
 import BackButton from '@/components/back-button';
 import RenderMd from '@/components/RenderMd';
 import ReviewSection from '@/components/post/review-section';
+import ShopLocationMap from '@/components/places/ShopLocationMap';
 
 // export const instant = false
 
@@ -37,6 +38,9 @@ type Post = {
     likes_count?: number;
     is_liked?: boolean;
     post_likes?: { user_id: string }[];
+    shop_address?: string | null;
+    shop_latitude?: number | null;
+    shop_longitude?: number | null;
 };
 
 function formatTimestamp(dateString?: string) {
@@ -157,6 +161,48 @@ async function PostDetail({ params }: PageProps) {
                         <RenderMd content={content} />
                     </div>
                 )}
+
+                {post.shop_latitude !== null &&
+                    post.shop_latitude !== undefined &&
+                    post.shop_longitude !== null &&
+                    post.shop_longitude !== undefined && (
+                        <section className="mt-6 rounded-lg border p-4">
+                            <div className="flex items-start justify-between gap-4">
+                                <div>
+                                    <p className="text-sm font-semibold">
+                                        Shop location
+                                    </p>
+                                    <p className="mt-1 font-medium">
+                                        {post.title || 'Selected shop'}
+                                    </p>
+                                    {post.shop_address && (
+                                        <p className="mt-1 text-sm text-muted-foreground">
+                                            {post.shop_address}
+                                        </p>
+                                    )}
+                                    <p className="mt-2 font-mono text-xs text-muted-foreground">
+                                        {post.shop_latitude.toFixed(6)},{' '}
+                                        {post.shop_longitude.toFixed(6)}
+                                    </p>
+                                </div>
+                                <a
+                                    className="text-sm text-primary underline-offset-4 hover:underline"
+                                    href={`https://www.openstreetmap.org/?mlat=${post.shop_latitude}&mlon=${post.shop_longitude}#map=18/${post.shop_latitude}/${post.shop_longitude}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    Open in new tab
+                                </a>
+                            </div>
+                            <div className="mt-4">
+                                <ShopLocationMap
+                                    latitude={post.shop_latitude}
+                                    longitude={post.shop_longitude}
+                                    title={post.title || 'Selected shop'}
+                                />
+                            </div>
+                        </section>
+                    )}
 
                 <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
                     <span>{formatTimestamp(post.created_at)}</span>

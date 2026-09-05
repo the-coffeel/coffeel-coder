@@ -25,6 +25,9 @@ export default function EditArticlePage({ postId }: EditArticlePageProps) {
         cover_image_url: '',
         summary: '',
         content: '',
+        shop_address: '',
+        shop_latitude: null,
+        shop_longitude: null,
     });
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
@@ -65,6 +68,9 @@ export default function EditArticlePage({ postId }: EditArticlePageProps) {
                 cover_image_url: data.cover_image_url ?? '',
                 summary: data.summary ?? '',
                 content: data.content ?? '',
+                shop_address: data.shop_address ?? '',
+                shop_latitude: data.shop_latitude ?? null,
+                shop_longitude: data.shop_longitude ?? null,
             });
             setLoading(false);
         };

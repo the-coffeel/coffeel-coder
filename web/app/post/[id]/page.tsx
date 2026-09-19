@@ -61,8 +61,8 @@ function formatTimestamp(dateString?: string) {
 const Page = ({ params }: PageProps) => {
     return (
         <ProtectedLayout>
-            <main className="min-h-screen border-x max-w-4xl mx-auto">
-                <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/95 px-5 py-4 backdrop-blur">
+            <main className="min-h-screen max-w-4xl mx-auto">
+                <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4">
                     <BackButton route="/places" />
                 </div>
 
@@ -166,7 +166,7 @@ async function PostDetail({ params }: PageProps) {
                     post.shop_latitude !== undefined &&
                     post.shop_longitude !== null &&
                     post.shop_longitude !== undefined && (
-                        <section className="mt-6 rounded-lg border p-4">
+                        <section className="mt-6 rounded-lg p-4">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
                                     <p className="text-sm font-semibold">
@@ -209,7 +209,7 @@ async function PostDetail({ params }: PageProps) {
                 </div>
             </article>
 
-            <div className="p-4 border-t">
+            <div className="p-4">
                 <PostActions
                     postId={post.id}
                     likesCount={likesCount}

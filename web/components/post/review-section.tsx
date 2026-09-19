@@ -114,7 +114,7 @@ export default async function ReviewSection({ postId }: { postId: string }) {
     }));
 
     return (
-        <section className="border-t p-5" aria-labelledby="reviews-heading">
+        <section className="p-5" aria-labelledby="reviews-heading">
             <div className="flex flex-col gap-5">
                 <div className="flex items-center justify-between gap-4">
                     <div>

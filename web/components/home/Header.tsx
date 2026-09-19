@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserProfileMenu } from "../UserProfileMenu";
-import { Bell, Plus, MapPin, Coffee, BookOpen } from "lucide-react";
+import { Bell, Plus, Coffee, BookOpen } from "lucide-react";
 
 export type UserProfile = {
   id?: string;
@@ -36,8 +36,7 @@ export interface UserProfileMenuProps {
 }
 
 const navLinks = [
-  { label: "Places", href: "/places", icon: MapPin },
-  { label: "Coffee Vote", href: "/places?tab=top-rated", icon: Coffee },
+  { label: "Places", href: "/places", icon: Coffee},
   { label: "Blog", href: "/blog", icon: BookOpen },
 ];
 

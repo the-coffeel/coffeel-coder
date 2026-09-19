@@ -7,13 +7,6 @@ import {
   X,
   ChevronDown,
   Check,
-  Coffee,
-  Code2,
-  Zap,
-  VolumeX,
-  Award,
-  Sparkles,
-  Wifi,
 } from "lucide-react";
 
 export interface DiscoverHeroProps {
@@ -35,23 +28,11 @@ const CITIES = [
   "Remote / Online",
 ];
 
-const QUICK_FILTERS = [
-  { id: "all", label: "All Spots", icon: Sparkles },
-  { id: "coffee-vote", label: "Top Voted Coffee", icon: Award },
-  { id: "specialty-coffee", label: "Specialty Coffee", icon: Coffee },
-  { id: "fast-wi-fi", label: "High-Speed Wi-Fi", icon: Wifi },
-  { id: "power-outlets", label: "Power Outlets", icon: Zap },
-  { id: "quiet-focus", label: "Quiet Focus", icon: VolumeX },
-  { id: "tech-code", label: "Tech & Code", icon: Code2 },
-];
-
 export default function DiscoverHero({
   searchQuery,
   onSearchChange,
   selectedCity,
   onCityChange,
-  selectedCategory,
-  onCategoryChange,
 }: DiscoverHeroProps) {
   const [isCityOpen, setIsCityOpen] = useState(false);
 
@@ -111,7 +92,6 @@ export default function DiscoverHero({
           </div>
         </div>
 
-        {/* Luma-style Search Bar */}
         <div className="relative mb-5">
           <div className="relative flex items-center">
             <Search className="absolute left-4 w-4 h-4 text-zinc-400 pointer-events-none" />
@@ -120,7 +100,7 @@ export default function DiscoverHero({
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search by cafe name, coffee rating, quiet zone, outlets, or address..."
-              className="w-full pl-11 pr-24 py-3 rounded-2xl bg-[#18181b] border border-white/10 hover:border-white/20 focus:border-amber-400/60 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400/40 transition-all"
+              className="w-full pl-11 pr-24 py-3 rounded-2xl bg-[#18181b] border border-white/10 hover:border-white/20 focus:border-amber-400/60 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400/40"
             />
             {searchQuery && (
               <button
@@ -132,29 +112,6 @@ export default function DiscoverHero({
               </button>
             )}
           </div>
-        </div>
-
-        {/* Quick Filter Pills (SVG icons only, NO emojis) */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none no-scrollbar">
-          {QUICK_FILTERS.map((cat) => {
-            const isSelected = selectedCategory === cat.id;
-            const Icon = cat.icon;
-
-            return (
-              <button
-                key={cat.id}
-                onClick={() => onCategoryChange(cat.id)}
-                className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
-                  isSelected
-                    ? "bg-white text-zinc-950 shadow-md font-semibold"
-                    : "bg-[#18181b] hover:bg-[#222226] text-zinc-300 border border-white/[0.06] hover:border-white/10"
-                }`}
-              >
-                <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-zinc-950" : "text-amber-400"}`} />
-                <span>{cat.label}</span>
-              </button>
-            );
-          })}
         </div>
       </div>
     </section>

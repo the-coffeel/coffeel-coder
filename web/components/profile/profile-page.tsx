@@ -324,7 +324,7 @@ function ProfilePageContent() {
                         <div className="mt-4 sm:mt-0 sm:mb-2 shrink-0">
                             {isOwnProfile ? (
                                 <Link
-                                    href="/settings/profile"
+                                    href="/profile/setup"
                                     className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors"
                                 >
                                     <Pencil className="h-4 w-4" />

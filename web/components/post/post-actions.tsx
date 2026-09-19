@@ -153,7 +153,7 @@ export default function PostActions({
                 <Button
                     variant="ghost"
                     size="sm"
-                    className={`gap-2 transition-colors border  ${
+                    className={`gap-2 transition-colors ${
                         isLiked
                             ? 'text-rose-600 hover:text-rose-700 bg-rose-100'
                             : 'text-muted-foreground hover:text-rose-600'

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { UserProfileMenu } from "../UserProfileMenu";
-import { Bell, Rocket } from "lucide-react";
+import { Bell, Plus, MapPin, Coffee, BookOpen } from "lucide-react";
 
 export type UserProfile = {
   id?: string;
@@ -35,123 +36,179 @@ export interface UserProfileMenuProps {
 }
 
 const navLinks = [
-  { label: "Community", href: "#community" },
-  { label: "Places", href: "/places" },
-  { label: "Projects", href: "/projects" },
-  { label: "Events", href: "#events" },
-  { label: "Blog", href: "blog" },
+  { label: "Places", href: "/places", icon: MapPin },
+  { label: "Coffee Vote", href: "/places?tab=top-rated", icon: Coffee },
+  { label: "Blog", href: "/blog", icon: BookOpen },
 ];
 
-export default function Header({
-  user,
-}: UserProfileMenuProps) {
+export default function Header({ user }: UserProfileMenuProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [timeStr, setTimeStr] = useState<string>("");
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const updateTime = () => {
+      try {
+        const now = new Date();
+        const formatted = new Intl.DateTimeFormat("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+          timeZoneName: "short",
+        }).format(now);
+        setTimeStr(formatted);
+      } catch {
+        setTimeStr("12:00 PM GMT+7");
+      }
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0d0d0d]/90 backdrop-blur-sm border-b border-[#6f4e37]/40 transition-colors">
+    <header className="sticky top-0 z-50 bg-[#09090b]/90 backdrop-blur-xl border-b border-white/[0.08] transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xl font-bold text-[#f5f0e8] hover:text-amber-400 transition-colors"
-          >
-            <span className="text-2xl">☕</span>
-            <span>Coffeel Coder</span>
-          </Link>
-
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="px-4 py-2 text-sm text-[#c4b49a] hover:text-[#f5f0e8] hover:bg-[#6f4e37]/20 transition-colors"
+        <div className="flex items-center justify-between h-14 gap-4">
+          {/* Left: Star SVG Logo */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="flex items-center gap-2 group p-1"
+              aria-label="Coffeel Home"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="w-5 h-5 text-white fill-white transition-transform group-hover:scale-110"
+                aria-hidden="true"
               >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            {!user ? (
-              <motion.a
-                href="auth/login"
-                className="px-5 py-2 text-sm font-semibold border border-amber-600 text-amber-400 transition-colors"
-                whileHover={{ backgroundColor: "#d97706", color: "#ffffff" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Join Community
-              </motion.a>
-            ) : (
-              <>
-                <motion.a
-                  href="/profile/posts/new"
-                  className="px-5 py-2 text-sm font-semibold border border-amber-600 text-amber-400 transition-colors"
-                  whileHover={{ backgroundColor: "#d97706", color: "#ffffff" }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Rocket className="inline-block w-4 h-4 mr-2" />
-                  Launch Place
-                </motion.a>
-                <motion.a
-                  href="#join"
-                  className="p-2 border flex items-center justify-center border-amber-600 transition-colors rounded-full w-10 h-10"
-                  whileHover={{ backgroundColor: "#d97706", color: "#ffffff" }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Bell className="w-5 h-5" />
-                </motion.a>
-                <UserProfileMenu user={user} showDetailsInTrigger={false} />
-              </>
-            )}
-
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+              </svg>
+              <span className="text-sm font-semibold text-white tracking-tight hidden sm:inline-block">
+                Coffeel
+              </span>
+            </Link>
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 text-[#c4b49a] hover:text-[#f5f0e8] transition-colors"
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+          {/* Center: Nav links exactly like Luma (Events, Calendars, Discover) */}
+          <nav className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => {
+              const isActive =
+                pathname === link.href ||
+                (link.href === "/places" && pathname === "/");
+              const Icon = link.icon;
+
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={`text-xs font-medium transition-colors flex items-center gap-2 py-1 ${
+                    isActive
+                      ? "text-white font-semibold"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-zinc-400"}`} />
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right: Time, Create Event / Place, Bell, Avatar */}
+          <div className="flex items-center gap-3">
+            {timeStr && (
+              <span className="text-xs text-zinc-500 font-normal hidden lg:inline-block">
+                {timeStr}
+              </span>
             )}
-          </button>
+
+            {!user ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/auth/login"
+                  className="text-xs font-medium text-zinc-300 hover:text-white transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/sign-up"
+                  className="px-3.5 py-1.5 text-xs font-semibold rounded-full bg-white text-zinc-950 hover:bg-zinc-200 transition-all shadow-sm"
+                >
+                  Join
+                </Link>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/profile/posts/new"
+                  className="text-xs font-medium text-white hover:text-amber-300 transition-colors hidden sm:inline-block"
+                >
+                  Create Place
+                </Link>
+
+                <button
+                  type="button"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+                  aria-label="Notifications"
+                >
+                  <Bell className="w-4 h-4" />
+                </button>
+
+                <UserProfileMenu user={user} showDetailsInTrigger={false} />
+              </div>
+            )}
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-1.5 text-zinc-400 hover:text-white transition-colors"
+              aria-label="Toggle navigation"
+            >
+              {mobileOpen ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Dropdown */}
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="md:hidden border-t border-[#6f4e37]/40 py-4 space-y-1 overflow-hidden"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="md:hidden border-t border-white/[0.08] py-3 space-y-2"
           >
-            {navLinks.map((link) => (
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] rounded-lg transition-colors"
+                >
+                  <Icon className="w-4 h-4 text-zinc-400" />
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
+            {user && (
               <Link
-                key={link.label}
-                href={link.href}
+                href="/profile/posts/new"
                 onClick={() => setMobileOpen(false)}
-                className="block px-4 py-2 text-sm text-[#c4b49a] hover:text-[#f5f0e8] hover:bg-[#6f4e37]/20 transition-colors"
+                className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-amber-300 hover:bg-white/[0.06] rounded-lg transition-colors"
               >
-                {link.label}
+                <Plus className="w-4 h-4" />
+                <span>Create Place</span>
               </Link>
-            ))}
-            <div className="pt-3 px-4">
-              <Link
-                href="#join"
-                className="block text-center px-5 py-2 text-sm font-semibold border border-amber-600 text-amber-400 hover:bg-amber-600 hover:text-white transition-colors"
-              >
-                Join Community
-              </Link>
-            </div>
+            )}
           </motion.div>
         )}
       </div>

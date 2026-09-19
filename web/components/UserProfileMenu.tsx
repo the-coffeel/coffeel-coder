@@ -109,10 +109,10 @@ export function UserProfileMenu({
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <button className="flex flex-row gap-2 items-center text-left focus:outline-none">
-          <Avatar className="cursor-pointer w-10 h-10 rounded-md object-cover">
-            <AvatarImage src={avatarUrl} alt={displayName} className='object-cover' />
-            <AvatarFallback className="w-10 h-10 rounded-md">
+        <button className="flex flex-row gap-2 items-center text-left focus:outline-none p-0.5 rounded-full hover:ring-2 hover:ring-white/20 transition-all">
+          <Avatar className="cursor-pointer w-8 h-8 rounded-full border border-white/15 object-cover">
+            <AvatarImage src={avatarUrl} alt={displayName} className='object-cover rounded-full' />
+            <AvatarFallback className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 text-zinc-950 font-bold text-xs">
               {initials}
             </AvatarFallback>
           </Avatar>

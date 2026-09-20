@@ -14,6 +14,7 @@ export default function BlogPage() {
         title: '',
         slug: '',
         cover_image_url: '',
+        gallery: [],
         summary: '',
         content: '',
         shop_address: '',
@@ -63,17 +64,17 @@ export default function BlogPage() {
 
     return (
         <main className="border-x max-w-6xl mx-auto border-b">
-                <ArticleEditorHeader
-                    value={value}
-                    onSaveDraft={handleSaveDraft}
-                    onPublish={handlePublish}
-                    loading={isPending}
-                    errorMessage={error?.message}
-                />
+            <ArticleEditorHeader
+                value={value}
+                onSaveDraft={handleSaveDraft}
+                onPublish={handlePublish}
+                loading={isPending}
+                errorMessage={error?.message}
+            />
 
-                <div className="p-4">
-                    <ArticleEditor onChange={setValue} value={value} />
-                </div>
+            <div className="p-4">
+                <ArticleEditor onChange={setValue} value={value} />
+            </div>
         </main>
     );
 }

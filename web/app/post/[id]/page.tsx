@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import BackButton from '@/components/back-button';
 import RenderMd from '@/components/RenderMd';
 import ReviewSection from '@/components/post/review-section';
+import PostGallery from '@/components/post/PostGallery';
 import ShopLocationMap from '@/components/places/ShopLocationMap';
 
 // export const instant = false
@@ -29,6 +30,7 @@ type Post = {
     content?: string;
     body?: string;
     cover_image_url?: string;
+    gallery?: string[];
     hashtags?: string[];
     created_at?: string;
     replies_count?: number;
@@ -80,12 +82,10 @@ async function PostDetail({ params }: PageProps) {
     const { id } = await params;
     const supabase = await createClient();
 
-    const [{ data: authData }, postResult] = await Promise.all([
-        supabase.auth.getUser(),
-        supabase
-            .from('posts')
-            .select(
-                `
+    const postResult = await supabase
+        .from('posts')
+        .select(
+            `
                 *,
                 profile:profiles!posts_user_id_profiles_fkey (
                     username,
@@ -96,12 +96,10 @@ async function PostDetail({ params }: PageProps) {
                     user_id
                 )
             `,
-            )
-            .eq('id', id)
-            .single<Post>(),
-    ]);
+        )
+        .eq('id', id)
+        .single<Post>();
 
-    const user = authData.user;
     const { data: post, error } = postResult;
 
     if (error || !post) {
@@ -112,6 +110,13 @@ async function PostDetail({ params }: PageProps) {
     const displayName =
         post.profile?.display_name ?? post.profile?.username ?? 'Unknown';
     const handle = post.profile?.username ?? 'unknown';
+    const gallery = Array.from(
+        new Set(
+            [post.cover_image_url, ...(post.gallery ?? [])].filter(
+                (url): url is string => Boolean(url),
+            ),
+        ),
+    );
 
     return (
         <>
@@ -146,6 +151,10 @@ async function PostDetail({ params }: PageProps) {
                         </div>
                     </Link>
                 </div>
+
+                {gallery.length > 0 && (
+                    <PostGallery images={gallery} title={post.title} />
+                )}
 
                 {content && (
                     <div className="prose prose-sm dark:prose-invert mt-4 max-w-none leading-relaxed text-md break-words [&_a]:text-indigo-600 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-2 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic">

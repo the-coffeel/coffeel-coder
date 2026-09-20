@@ -18,6 +18,7 @@ export interface ArticleEditorValue {
     title: string;
     slug: string;
     cover_image_url: string;
+    gallery: string[];
     summary: string;
     content: string;
     shop_address: string;
@@ -56,6 +57,17 @@ export function ArticleEditor({ value, onChange }: ArticleEditorProps) {
                         value={value.cover_image_url}
                         alt={value.title || 'Shop thumbnail'}
                         onChange={handleImageChange}
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <p className="text-sm font-medium">Gallery</p>
+                    <ArticleEditorGalleryInput
+                        value={value.gallery}
+                        alt={value.title || 'Shop gallery image'}
+                        onChange={(gallery) =>
+                            onChange((prev) => ({ ...prev, gallery }))
+                        }
                     />
                 </div>
 
@@ -188,6 +200,104 @@ function ArticleEditorImageInput({
                     </div>
                 </div>
             )}
+        </>
+    );
+}
+
+function ArticleEditorGalleryInput({
+    value,
+    alt,
+    onChange,
+}: {
+    value: string[];
+    alt: string;
+    onChange: (value: string[]) => void;
+}) {
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogTab, setDialogTab] = useState<DialogTab>('Photos');
+
+    const openPicker = (tab: DialogTab) => {
+        setDialogTab(tab);
+        setDialogOpen(true);
+    };
+
+    const handleSelect = (url: string) => {
+        if (!value.includes(url)) {
+            onChange([...value, url]);
+        }
+    };
+
+    return (
+        <>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent className="w-full !max-w-3xl max-h-[85vh] overflow-y-auto border border-sky-800 p-0">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Choose gallery images</DialogTitle>
+                    </DialogHeader>
+                    <StoragePage
+                        pickerMode
+                        initialTab={dialogTab}
+                        onSelect={handleSelect}
+                    />
+                    <div className="flex justify-end border-t p-4">
+                        <Button
+                            type="button"
+                            onClick={() => setDialogOpen(false)}
+                        >
+                            Done
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {value.length > 0 && (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {value.map((url, index) => (
+                        <div
+                            key={url}
+                            className="relative aspect-square overflow-hidden rounded-md border bg-muted"
+                        >
+                            <Image
+                                src={url}
+                                alt={`${alt} ${index + 1}`}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                            />
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant="destructive"
+                                className="absolute right-1 top-1"
+                                onClick={() =>
+                                    onChange(
+                                        value.filter((item) => item !== url),
+                                    )
+                                }
+                            >
+                                Remove
+                            </Button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            <div className="flex gap-2">
+                <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => openPicker('Upload')}
+                >
+                    Upload image
+                </Button>
+                <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => openPicker('Photos')}
+                >
+                    Browse storage
+                </Button>
+            </div>
         </>
     );
 }

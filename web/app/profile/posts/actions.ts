@@ -43,6 +43,7 @@ export async function createPostAction(payload: {
         user_id: user.id,
         published: payload.published ?? false,
         cover_image_url: payload.data.cover_image_url || undefined,
+        gallery: payload.data.gallery ?? [],
         shop_address: payload.data.shop_address || null,
         shop_latitude: payload.data.shop_latitude,
         shop_longitude: payload.data.shop_longitude,
@@ -78,6 +79,9 @@ export async function updatePostAction(
             content: payload.data.content,
             published: payload.published ?? false,
             cover_image_url: payload.data.cover_image_url || null,
+            ...(payload.data.gallery !== undefined
+                ? { gallery: payload.data.gallery }
+                : {}),
             shop_address: payload.data.shop_address || null,
             shop_latitude: payload.data.shop_latitude,
             shop_longitude: payload.data.shop_longitude,

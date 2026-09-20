@@ -62,8 +62,7 @@ export default function BlogPage() {
     }, [value, saveArticle]);
 
     return (
-        <main className="border-r">
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-1">
+        <main className="border-x max-w-6xl mx-auto border-b">
                 <ArticleEditorHeader
                     value={value}
                     onSaveDraft={handleSaveDraft}
@@ -75,7 +74,6 @@ export default function BlogPage() {
                 <div className="p-4">
                     <ArticleEditor onChange={setValue} value={value} />
                 </div>
-            </div>
         </main>
     );
 }

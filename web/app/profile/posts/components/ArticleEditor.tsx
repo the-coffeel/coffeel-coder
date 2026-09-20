@@ -54,7 +54,7 @@ export function ArticleEditor({ value, onChange }: ArticleEditorProps) {
                 />
 
                 <Input
-                    placeholder="Article Title"
+                    placeholder="Shop Name"
                     value={value.title}
                     onChange={(e) =>
                         onChange((prev) => ({ ...prev, title: e.target.value }))

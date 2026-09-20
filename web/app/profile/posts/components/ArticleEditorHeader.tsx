@@ -22,9 +22,9 @@ export function ArticleEditorHeader({
     return (
         <>
             <div className="border-b p-4">
-                <div className="max-w-5xl mx-auto flex items-center">
+                <div className="max-w-6xl mx-auto flex items-center">
                     <h1 className="font-bold grow">
-                        {isUpdate ? 'Update Article' : 'Create Article'}
+                        {isUpdate ? 'Update Share Place' : 'Share Place'}
                     </h1>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">

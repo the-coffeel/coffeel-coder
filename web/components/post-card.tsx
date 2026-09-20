@@ -37,6 +37,7 @@ export type Post = {
     likes_count?: number;
     is_liked?: boolean;
     post_likes?: { user_id: string }[];
+    reviews?: { rating: number }[];
     published: boolean;
     shop_address?: string | null;
     shop_latitude?: number | null;
@@ -78,6 +79,10 @@ export default function PostCard({ post }: PostCardProps) {
     const handle = post.profile?.username ?? 'user';
 
     const location = post.shop_address || 'Phnom Penh';
+    const averageRating = post.reviews?.length
+        ? post.reviews.reduce((sum, review) => sum + review.rating, 0) /
+          post.reviews.length
+        : 0;
 
     return (
         <div
@@ -129,7 +134,7 @@ export default function PostCard({ post }: PostCardProps) {
                         </div>
                         <div className="flex items-center gap-1 text-amber-400 font-semibold text-xs flex-shrink-0">
                             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                            <span>4.9</span>
+                            <span>{averageRating.toFixed(1)}</span>
                         </div>
                     </div>
 

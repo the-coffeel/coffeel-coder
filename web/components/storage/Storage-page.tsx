@@ -330,7 +330,7 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                     </p>
                     {!pickerMode && (
                         <Link
-                            href="/feed"
+                            href="/"
                             className={`absolute right-5 top-5 rounded-full p-1.5 transition-colors hover:text-neutral-200 ${FOCUS_RING}`}
                         >
                             <X className="h-4 w-4" />

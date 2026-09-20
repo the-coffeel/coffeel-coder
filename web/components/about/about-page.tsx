@@ -10,7 +10,7 @@ export default function AboutPage() {
         <main className="min-h-screen border-r">
             <div className="sticky top-0 z-10 flex items-center gap-2 border-b bg-background/95 px-5 py-4 backdrop-blur">
                 <Link
-                    href="/feed"
+                    href="/"
                     className="flex items-center gap-2 text-sm font-medium text-indigo-600"
                 >
                     <ArrowLeft className="h-4 w-4" />

@@ -38,7 +38,7 @@ export function LoginForm({
                 password,
             });
             if (error) throw error;
-            router.push('/feed');
+            router.push('/');
         } catch (error: unknown) {
             setError(
                 error instanceof Error ? error.message : 'An error occurred',
@@ -57,7 +57,7 @@ export function LoginForm({
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/feed`,
+                    redirectTo: `${window.location.origin}/`,
                 },
             });
             if (error) throw error;

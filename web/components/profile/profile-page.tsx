@@ -11,12 +11,20 @@ import {
     ArrowUpRight,
     Coffee,
     CalendarDays,
-    UserCheck,
-    UserPlus,
     Pencil,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 /* ------------------------------- types ------------------------------- */
 
@@ -28,11 +36,8 @@ type Profile = {
     avatar_url?: string;
     header_url?: string;
     bio?: string;
-    followers_count?: number;
-    following_count?: number;
     posts_count?: number;
     created_at?: string;
-    is_following?: boolean;
 };
 
 type Post = {
@@ -71,7 +76,9 @@ function groupPostsByDate(posts: Post[]): DateGroup[] {
 
     const map = new Map<string, Post[]>();
     const sorted = [...posts].sort(
-        (a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime(),
+        (a, b) =>
+            new Date(b.created_at ?? 0).getTime() -
+            new Date(a.created_at ?? 0).getTime(),
     );
 
     for (const post of sorted) {
@@ -86,14 +93,21 @@ function groupPostsByDate(posts: Post[]): DateGroup[] {
         d.setHours(0, 0, 0, 0);
         let label: string;
         if (d.getTime() === today.getTime()) {
-            label = 'Today \u00b7 ' + d.toLocaleDateString('en-US', { weekday: 'long' });
+            label =
+                'Today \u00b7 ' +
+                d.toLocaleDateString('en-US', { weekday: 'long' });
         } else if (d.getTime() === yesterday.getTime()) {
-            label = 'Yesterday \u00b7 ' + d.toLocaleDateString('en-US', { weekday: 'long' });
+            label =
+                'Yesterday \u00b7 ' +
+                d.toLocaleDateString('en-US', { weekday: 'long' });
         } else {
             label = d.toLocaleDateString('en-US', {
                 month: 'long',
                 day: 'numeric',
-                year: d.getFullYear() !== today.getFullYear() ? 'numeric' : undefined,
+                year:
+                    d.getFullYear() !== today.getFullYear()
+                        ? 'numeric'
+                        : undefined,
             });
         }
         return { label, isoDate: iso, posts: ps };
@@ -102,12 +116,19 @@ function groupPostsByDate(posts: Post[]): DateGroup[] {
 
 function formatTime(dateStr?: string) {
     if (!dateStr) return '';
-    return new Date(dateStr).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    return new Date(dateStr).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+    });
 }
 
-function joinedMonthYear(dateStr?: string) {
+function joinedDayMonthYear(dateStr?: string) {
     if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    return new Date(dateStr).toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
 }
 
 /* ------------------------------- page entry --------------------------- */
@@ -124,18 +145,24 @@ export default function ProfilePage() {
 
 function ProfilePageContent() {
     const { username } = useParams<{ username: string }>();
-    const handle = username ? decodeURIComponent(username).replace(/^@/, '') : undefined;
+    const handle = username
+        ? decodeURIComponent(username).replace(/^@/, '')
+        : undefined;
     const router = useRouter();
 
     const [profile, setProfile] = useState<Profile | null>(null);
     const [posts, setPosts] = useState<Post[] | null>(null);
-    const [isFollowing, setIsFollowing] = useState(false);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+    const [postToDelete, setPostToDelete] = useState<string | number | null>(
+        null,
+    );
 
     const supabase = createClient();
 
     const isOwnProfile =
-        currentUserId != null && profile != null && String(currentUserId) === String(profile.id);
+        currentUserId != null &&
+        profile != null &&
+        String(currentUserId) === String(profile.id);
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data }) => {
@@ -161,7 +188,6 @@ function ProfilePageContent() {
             }
 
             setProfile(profileData);
-            setIsFollowing(Boolean(profileData?.is_following));
 
             let postsQuery = supabase
                 .from('posts')
@@ -178,9 +204,10 @@ function ProfilePageContent() {
                 postsQuery = postsQuery.eq('published', true);
             }
 
-            const { data: postsData, error: postsError } = await postsQuery.order('created_at', {
-                ascending: false,
-            });
+            const { data: postsData, error: postsError } =
+                await postsQuery.order('created_at', {
+                    ascending: false,
+                });
 
             if (postsError) {
                 console.error(postsError);
@@ -195,7 +222,10 @@ function ProfilePageContent() {
 
     const handleDeletePost = useCallback(
         async (postId: string | number) => {
-            const { error } = await supabase.from('posts').delete().eq('id', postId);
+            const { error } = await supabase
+                .from('posts')
+                .delete()
+                .eq('id', postId);
             if (error) {
                 console.error('Failed to delete post:', error);
                 return;
@@ -212,22 +242,10 @@ function ProfilePageContent() {
         [router],
     );
 
-    const toggleFollow = async () => {
-        setIsFollowing((prev) => !prev);
-        const { error } = await supabase
-            .from('follows')
-            .upsert({ handle, following: !isFollowing });
-        if (error) {
-            console.error(error);
-            setIsFollowing((prev) => !prev);
-        }
-    };
-
     const dateGroups = posts ? groupPostsByDate(posts) : [];
 
     return (
         <div className="min-h-screen bg-[#09090b] text-white">
-
             {/* Banner */}
             <div className="relative h-52 sm:h-64 w-full bg-[#18181b] overflow-hidden">
                 {profile?.header_url ? (
@@ -247,20 +265,27 @@ function ProfilePageContent() {
             {/* Profile Header */}
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
                 <div className="relative -mt-16 flex flex-col sm:flex-row sm:items-end sm:gap-6 pb-6 border-b border-white/[0.08]">
-
                     {/* Avatar */}
                     <div className="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28">
                         {profile?.avatar_url ? (
                             <Image
                                 src={profile.avatar_url}
-                                alt={profile.display_name ?? profile.username ?? 'Avatar'}
+                                alt={
+                                    profile.display_name ??
+                                    profile.username ??
+                                    'Avatar'
+                                }
                                 fill
                                 className="object-cover rounded-2xl border-4 border-[#09090b] shadow-xl"
                             />
                         ) : (
                             <div className="w-full h-full rounded-2xl border-4 border-[#09090b] bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-xl">
                                 <span className="text-3xl font-bold text-white select-none">
-                                    {(profile?.display_name ?? profile?.username ?? '?')
+                                    {(
+                                        profile?.display_name ??
+                                        profile?.username ??
+                                        '?'
+                                    )
                                         .slice(0, 2)
                                         .toUpperCase()}
                                 </span>
@@ -292,18 +317,6 @@ function ProfilePageContent() {
                                 <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-white/50">
                                     <span>
                                         <span className="font-semibold text-white">
-                                            {profile.followers_count ?? 0}
-                                        </span>{' '}
-                                        Followers
-                                    </span>
-                                    <span>
-                                        <span className="font-semibold text-white">
-                                            {profile.following_count ?? 0}
-                                        </span>{' '}
-                                        Following
-                                    </span>
-                                    <span>
-                                        <span className="font-semibold text-white">
                                             {posts?.length ?? 0}
                                         </span>{' '}
                                         Posts
@@ -311,7 +324,10 @@ function ProfilePageContent() {
                                     {profile.created_at && (
                                         <span className="flex items-center gap-1">
                                             <CalendarDays className="h-3.5 w-3.5" />
-                                            Joined {joinedMonthYear(profile.created_at)}
+                                            Joined{' '}
+                                            {joinedDayMonthYear(
+                                                profile.created_at,
+                                            )}
                                         </span>
                                     )}
                                 </div>
@@ -322,7 +338,7 @@ function ProfilePageContent() {
                     {/* Action button */}
                     {profile && (
                         <div className="mt-4 sm:mt-0 sm:mb-2 shrink-0">
-                            {isOwnProfile ? (
+                            {isOwnProfile && (
                                 <Link
                                     href="/profile/setup"
                                     className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors"
@@ -330,28 +346,7 @@ function ProfilePageContent() {
                                     <Pencil className="h-4 w-4" />
                                     Edit Profile
                                 </Link>
-                            ) : (
-                                <button
-                                    onClick={toggleFollow}
-                                    className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-                                        isFollowing
-                                            ? 'border border-white/15 bg-white/5 hover:bg-white/10 text-white'
-                                            : 'bg-amber-500 hover:bg-amber-400 text-black'
-                                    }`}
-                                >
-                                    {isFollowing ? (
-                                        <>
-                                            <UserCheck className="h-4 w-4" />
-                                            Following
-                                        </>
-                                    ) : (
-                                        <>
-                                            <UserPlus className="h-4 w-4" />
-                                            Follow
-                                        </>
-                                    )}
-                                </button>
-                            )}
+                            ) }
                         </div>
                     )}
                 </div>
@@ -388,7 +383,8 @@ function ProfilePageContent() {
                                 </span>
                                 <div className="flex-1 h-px bg-white/[0.08]" />
                                 <span className="text-xs text-white/30">
-                                    {group.posts.length} post{group.posts.length !== 1 ? 's' : ''}
+                                    {group.posts.length} post
+                                    {group.posts.length !== 1 ? 's' : ''}
                                 </span>
                             </div>
 
@@ -414,7 +410,7 @@ function ProfilePageContent() {
                                                     ))
                                         }
                                         onEdit={handleEditPost}
-                                        onDelete={handleDeletePost}
+                                        onDelete={setPostToDelete}
                                     />
                                 ))}
                             </div>
@@ -422,6 +418,38 @@ function ProfilePageContent() {
                     ))}
                 </div>
             </div>
+
+            <AlertDialog
+                open={postToDelete !== null}
+                onOpenChange={(open) => {
+                    if (!open) setPostToDelete(null);
+                }}
+            >
+                <AlertDialogContent size="sm">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete post?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. The post will be
+                            permanently deleted.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            variant="destructive"
+                            onClick={async (event) => {
+                                event.preventDefault();
+                                if (postToDelete === null) return;
+
+                                await handleDeletePost(postToDelete);
+                                setPostToDelete(null);
+                            }}
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
@@ -435,7 +463,12 @@ type TimelinePostCardProps = {
     onDelete: (id: string | number) => void;
 };
 
-function TimelinePostCard({ post, isOwner, onEdit, onDelete }: TimelinePostCardProps) {
+function TimelinePostCard({
+    post,
+    isOwner,
+    onEdit,
+    onDelete,
+}: TimelinePostCardProps) {
     const timeLabel = formatTime(post.created_at);
     const likeCount = post.likes_count ?? post.post_likes?.length ?? 0;
     const replyCount = post.replies_count ?? 0;
@@ -445,7 +478,9 @@ function TimelinePostCard({ post, isOwner, onEdit, onDelete }: TimelinePostCardP
         <div className="relative flex gap-4 group">
             {/* Time + dot */}
             <div className="absolute -left-20 top-4 flex flex-col items-end w-16">
-                <span className="text-xs text-white/40 font-mono">{timeLabel}</span>
+                <span className="text-xs text-white/40 font-mono">
+                    {timeLabel}
+                </span>
                 <div className="mt-2 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-[#09090b] self-end" />
             </div>
 
@@ -473,13 +508,15 @@ function TimelinePostCard({ post, isOwner, onEdit, onDelete }: TimelinePostCardP
                     )}
 
                     <h3 className="font-semibold text-sm leading-snug text-white line-clamp-2 group-hover/card:text-amber-400 transition-colors">
-                        {post.title ?? (post.content?.slice(0, 80) ?? 'Untitled')}
+                        {post.title ?? post.content?.slice(0, 80) ?? 'Untitled'}
                     </h3>
 
                     {post.shop_address && (
                         <p className="mt-1 flex items-center gap-1 text-xs text-white/40">
                             <MapPin className="h-3 w-3 shrink-0" />
-                            <span className="truncate">{post.shop_address}</span>
+                            <span className="truncate">
+                                {post.shop_address}
+                            </span>
                         </p>
                     )}
 
@@ -553,7 +590,10 @@ function ProfilePageSkeleton() {
                 </div>
                 <div className="py-8 space-y-6">
                     {[1, 2, 3].map((i) => (
-                        <Skeleton key={i} className="h-24 w-full rounded-2xl bg-white/10" />
+                        <Skeleton
+                            key={i}
+                            className="h-24 w-full rounded-2xl bg-white/10"
+                        />
                     ))}
                 </div>
             </div>

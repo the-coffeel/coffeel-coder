@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import PostActions from '@/components/post/post-actions';
 import BackButton from '@/components/back-button';
 import RenderMd from '@/components/RenderMd';
 import ReviewSection from '@/components/post/review-section';
@@ -210,16 +209,6 @@ async function PostDetail({ params }: PageProps) {
                     <span>{formatTimestamp(post.created_at)}</span>
                 </div>
             </article>
-
-            <div className="p-4">
-                <PostActions
-                    postId={post.id}
-                    likesCount={likesCount}
-                    isLiked={isLiked}
-                    repliesCount={post.replies_count}
-                    isOwner={isOwner}
-                />
-            </div>
 
             <Suspense fallback={<ReviewSkeleton />}>
                 <ReviewSection postId={String(post.id)} />

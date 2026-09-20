@@ -48,18 +48,35 @@ export function ArticleEditor({ value, onChange }: ArticleEditorProps) {
     return (
         <div>
             <div className="flex flex-col gap-4">
-                <ArticleEditorImageInput
-                    value={value.cover_image_url}
-                    onChange={handleImageChange}
-                />
+                <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                        Thumbnail <span className="text-destructive">*</span>
+                    </p>
+                    <ArticleEditorImageInput
+                        value={value.cover_image_url}
+                        alt={value.title || 'Shop thumbnail'}
+                        onChange={handleImageChange}
+                    />
+                </div>
 
-                <Input
-                    placeholder="Shop Name"
-                    value={value.title}
-                    onChange={(e) =>
-                        onChange((prev) => ({ ...prev, title: e.target.value }))
-                    }
-                />
+                <div className="space-y-2">
+                    <label htmlFor="shop-name" className="text-sm font-medium">
+                        Shop name <span className="text-destructive">*</span>
+                    </label>
+                    <Input
+                        id="shop-name"
+                        placeholder="Shop name"
+                        aria-label="Shop name"
+                        required
+                        value={value.title}
+                        onChange={(e) =>
+                            onChange((prev) => ({
+                                ...prev,
+                                title: e.target.value,
+                            }))
+                        }
+                    />
+                </div>
 
                 <MarkdownEditor
                     value={value.content}
@@ -91,8 +108,10 @@ type DialogTab = 'Photos' | 'Upload';
 function ArticleEditorImageInput({
     onChange,
     value,
+    alt,
 }: {
     value?: string;
+    alt: string;
     onChange: (value: string) => void;
 }) {
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -130,13 +149,14 @@ function ArticleEditorImageInput({
             </Dialog>
 
             {value ? (
-                <div className="relative h-96 overflow-hidden">
+                <div className="relative aspect-video overflow-hidden rounded-md border bg-muted">
                     <Image
                         src={value}
-                        alt="Article Image"
-                        className="w-full h-full object-cover"
-                        width={500}
-                        height={300}
+                        alt={alt}
+                        className="h-full w-full object-contain"
+                        width={1200}
+                        height={675}
+                        unoptimized
                     />
                     <Button
                         className="absolute top-2 right-2 shadow-md"

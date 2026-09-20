@@ -113,16 +113,6 @@ async function PostDetail({ params }: PageProps) {
         post.profile?.display_name ?? post.profile?.username ?? 'Unknown';
     const handle = post.profile?.username ?? 'unknown';
 
-    const isLiked = Boolean(
-        user?.id && post.post_likes?.some((l) => l.user_id === user.id),
-    );
-    const likesCount =
-        post.likes_count ??
-        post.post_likes?.length ??
-        post.favourites_count ??
-        0;
-    const isOwner = Boolean(user?.id && user.id === post.user_id);
-
     return (
         <>
             <article className="p-5 ">
@@ -167,7 +157,7 @@ async function PostDetail({ params }: PageProps) {
                     post.shop_latitude !== undefined &&
                     post.shop_longitude !== null &&
                     post.shop_longitude !== undefined && (
-                        <section className="mt-6 rounded-lg p-4">
+                        <section className="mt-6 rounded-lg">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
                                     <p className="text-sm font-semibold">

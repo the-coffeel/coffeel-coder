@@ -116,7 +116,9 @@ export default function ShopLocationPicker({
     return (
         <section className="space-y-3 rounded-lg border p-4">
             <div>
-                <h2 className="font-semibold">Shop location</h2>
+                <h2 className="font-semibold">
+                    Shop location <span className="text-destructive">*</span>
+                </h2>
                 <p className="text-sm text-muted-foreground">
                     Choose the exact place visitors should find.
                 </p>

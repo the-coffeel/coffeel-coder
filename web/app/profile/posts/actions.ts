@@ -3,6 +3,24 @@
 import { createClient } from '@/lib/supabase/server';
 import { ArticleEditorValue } from './components/ArticleEditor';
 
+function validatePostData(data: ArticleEditorValue) {
+    if (!data.title.trim()) {
+        throw new Error('Shop name is required.');
+    }
+
+    if (!data.cover_image_url.trim()) {
+        throw new Error('A thumbnail is required.');
+    }
+
+    if (
+        !data.shop_address.trim() ||
+        data.shop_latitude === null ||
+        data.shop_longitude === null
+    ) {
+        throw new Error('A shop location is required.');
+    }
+}
+
 export async function createPostAction(payload: {
     data: ArticleEditorValue;
     published?: boolean;
@@ -16,6 +34,8 @@ export async function createPostAction(payload: {
     if (authError || !user) {
         throw new Error('Unauthorized');
     }
+
+    validatePostData(payload.data);
 
     const { error } = await supabase.from('posts').insert({
         title: payload.data.title,
@@ -48,6 +68,8 @@ export async function updatePostAction(
     if (authError || !user) {
         throw new Error('Unauthorized');
     }
+
+    validatePostData(payload.data);
 
     const { error } = await supabase
         .from('posts')

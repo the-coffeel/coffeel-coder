@@ -19,6 +19,16 @@ export function ArticleEditorHeader({
     errorMessage,
     isUpdate,
 }: ArticleEditorHeaderProps) {
+    const missingRequiredFields = [
+        !value.title.trim() && 'shop name',
+        !value.cover_image_url.trim() && 'thumbnail',
+        (!value.shop_address.trim() ||
+            value.shop_latitude === null ||
+            value.shop_longitude === null) &&
+            'location',
+    ].filter(Boolean) as string[];
+    const hasMissingRequiredFields = missingRequiredFields.length > 0;
+
     return (
         <>
             <div className="border-b p-4">
@@ -32,14 +42,18 @@ export function ArticleEditorHeader({
                             <Button
                                 variant={'secondary'}
                                 onClick={onSaveDraft}
-                                disabled={loading}
+                                disabled={loading || hasMissingRequiredFields}
                             >
                                 {isUpdate ? 'Save as Draft' : 'Save Draft'}
                             </Button>
                             {/* published to true */}
                             <Button
                                 onClick={onPublish}
-                                disabled={value.summary.length > 300 || loading}
+                                disabled={
+                                    value.summary.length > 300 ||
+                                    loading ||
+                                    hasMissingRequiredFields
+                                }
                             >
                                 {isUpdate ? 'Save and Publish' : 'Publish'}
                             </Button>
@@ -47,6 +61,11 @@ export function ArticleEditorHeader({
                     </div>
                 </div>
             </div>
+            {hasMissingRequiredFields && (
+                <p className="px-4 py-3 text-sm text-muted-foreground">
+                    Add a {missingRequiredFields.join(', ')} before saving.
+                </p>
+            )}
             {errorMessage && (
                 <div className="max-w-4xl mx-auto mb-4">
                     <div className="bg-red-100 text-red-800 p-4 rounded">

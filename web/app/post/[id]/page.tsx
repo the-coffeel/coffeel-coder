@@ -63,7 +63,7 @@ const Page = ({ params }: PageProps) => {
         <ProtectedLayout>
             <main className="min-h-screen max-w-4xl mx-auto">
                 <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4">
-                    <BackButton route="/places" />
+                    <BackButton />
                 </div>
 
                 <Suspense fallback={<PostSkeleton />}>
@@ -81,27 +81,29 @@ async function PostDetail({ params }: PageProps) {
     const { id } = await params;
     const supabase = await createClient();
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-
-    const { data: post, error } = await supabase
-        .from('posts')
-        .select(
-            `
-            *,
-            profile:profiles!posts_user_id_profiles_fkey (
-                username,
-                display_name,
-                avatar_url
-            ),
-            post_likes (
-                user_id
+    const [{ data: authData }, postResult] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase
+            .from('posts')
+            .select(
+                `
+                *,
+                profile:profiles!posts_user_id_profiles_fkey (
+                    username,
+                    display_name,
+                    avatar_url
+                ),
+                post_likes (
+                    user_id
+                )
+            `,
             )
-        `,
-        )
-        .eq('id', id)
-        .single<Post>();
+            .eq('id', id)
+            .single<Post>(),
+    ]);
+
+    const user = authData.user;
+    const { data: post, error } = postResult;
 
     if (error || !post) {
         notFound();
@@ -219,8 +221,19 @@ async function PostDetail({ params }: PageProps) {
                 />
             </div>
 
-            <ReviewSection postId={String(post.id)} />
+            <Suspense fallback={<ReviewSkeleton />}>
+                <ReviewSection postId={String(post.id)} />
+            </Suspense>
         </>
+    );
+}
+
+function ReviewSkeleton() {
+    return (
+        <div className="space-y-4 p-5 animate-pulse">
+            <div className="h-6 w-32 rounded bg-muted" />
+            <div className="h-28 rounded-lg bg-muted" />
+        </div>
     );
 }
 

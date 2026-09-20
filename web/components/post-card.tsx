@@ -1,7 +1,16 @@
 'use client';
 
-import { Hourglass, MapPin, Star, ArrowUpRight, Coffee, MessageSquare, Zap } from 'lucide-react';
+import {
+    Hourglass,
+    MapPin,
+    Star,
+    ArrowUpRight,
+    Coffee,
+    MessageSquare,
+    Zap,
+} from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
@@ -59,20 +68,30 @@ function timeAgo(dateStr?: string) {
     return `${Math.floor(h / 24)}d ago`;
 }
 
-export default function PostCard({
-    post,
-}: PostCardProps) {
+export default function PostCard({ post }: PostCardProps) {
+    const router = useRouter();
     const name =
-        post.profile?.display_name ?? post.profile?.username ?? 'Community Member';
+        post.profile?.display_name ??
+        post.profile?.username ??
+        'Community Member';
 
     const handle = post.profile?.username ?? 'user';
 
     const location = post.shop_address || 'Phnom Penh';
 
     return (
-        <Link
+        <div
             key={post.id}
-            href={`/post/${post.id}`}
+            role="link"
+            tabIndex={0}
+            onClick={() => router.push(`/post/${post.id}`)}
+            onKeyDown={(event) => {
+                if (event.target !== event.currentTarget) return;
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    router.push(`/post/${post.id}`);
+                }
+            }}
             className="group relative rounded-2xl overflow-hidden border border-white/[0.08] bg-[#18181b] hover:border-white/20 transition-all duration-300 flex flex-col justify-between hover:shadow-2xl hover:shadow-black/60"
         >
             {/* Media container */}
@@ -80,7 +99,7 @@ export default function PostCard({
                 {post.cover_image_url ? (
                     <Image
                         src={post.cover_image_url}
-                        alt={post.title || "N/A"}
+                        alt={post.title || 'N/A'}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                         sizes="(max-width: 768px) 100vw, 33vw"
@@ -116,7 +135,7 @@ export default function PostCard({
 
                     {/* Title */}
                     <h3 className="text-base font-semibold text-white group-hover:text-amber-300 transition-colors line-clamp-1 tracking-tight">
-                        {post.title || "N/A"}
+                        {post.title || 'N/A'}
                     </h3>
 
                     {/* Coffee & Workspace Amenities Chips (SVG icons only) */}
@@ -170,6 +189,6 @@ export default function PostCard({
                     </span>
                 </div>
             </div>
-        </Link>
+        </div>
     );
 }

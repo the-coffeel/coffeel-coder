@@ -143,8 +143,8 @@ const AvatarPage = () => {
     };
 
     return (
-        <main className="min-h-screen border-r">
-            <div className="sticky top-0 z-10 flex items-center gap-2 border-b bg-background/95 px-5 py-4 backdrop-blur">
+        <main className="mx-auto w-full max-w-4xl">
+            <div className="sticky top-0 z-10 flex items-center gap-2 bg-background/95 px-5 py-4 backdrop-blur">
                 <Link
                     href="/profile/setup"
                     className="flex items-center gap-2 text-sm font-medium text-indigo-600"

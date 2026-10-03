@@ -27,8 +27,8 @@ const menuItems = [
 
 const SetupPage = () => {
     return (
-        <div className="mx-auto w-full max-w-2xl bg-background border-r">
-            <div className="border-b px-4 py-4">
+        <div className="mx-auto w-full max-w-4xl bg-background">
+            <div className="px-4 py-4">
                 <BackButton/>
             </div>
 
@@ -37,7 +37,7 @@ const SetupPage = () => {
                     <Link
                         key={href}
                         href={href}
-                        className="flex items-center gap-4 border-b px-4 py-5 transition-colors hover:bg-muted/50"
+                        className="flex items-center gap-4 px-4 py-5 transition-colors hover:bg-muted/50"
                     >
                         <Icon className="h-6 w-6 shrink-0 text-muted-foreground" strokeWidth={1.5} />
                         <div className="flex-1">

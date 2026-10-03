@@ -10,22 +10,11 @@ import {
     Loader2,
     CheckCircle2,
     AlertCircle,
-    Edit,
     Trash,
 } from "lucide-react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -105,9 +94,6 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
 
     const [uploadItems, setUploadItems] = useState<UploadItem[]>([]);
     const [isDragging, setIsDragging] = useState(false);
-    const [editingAltTextId, setEditingAltTextId] = useState<string | null>(null);
-    const [editingAltTextValue, setEditingAltTextValue] = useState("");
-    const [isSavingAltText, setIsSavingAltText] = useState(false);
     const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
 
     const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -155,29 +141,6 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
         const next = (index + TABS.length) % TABS.length;
         setActiveTab(TABS[next]);
         tabRefs.current[next]?.focus();
-    };
-
-    const handleEditAltText = (id: string, currentAltText: string | null) => {
-        setEditingAltTextId(id);
-        setEditingAltTextValue(currentAltText || "");
-    };
-
-    const handleSaveAltText = async (id: string) => {
-        setIsSavingAltText(true);
-        const { error } = await supabase
-            .from("media")
-            .update({ alt_text: editingAltTextValue })
-            .eq("id", id);
-            
-        if (!error) {
-            setMediaFiles((prev) => 
-                prev.map((f) => f.id === id ? { ...f, alt_text: editingAltTextValue } : f)
-            );
-        } else {
-            console.error("Failed to update alt text", error);
-        }
-        setIsSavingAltText(false);
-        setEditingAltTextId(null);
     };
 
     const handleDeleteMedia = async (file: MediaRecord) => {        
@@ -319,9 +282,9 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
 
     return (
         <div className="border-r">
-            <div className="w-full maxw-6xl overflow-hidden backdrop-blur">
+            <div className="w-full max-w-4xl mx-auto overflow-hidden backdrop-blur">
                 {/* Header */}
-                <div className="relative border-b border-neutral-800/80 px-6 pb-5 pt-6">
+                <div className="relative border-neutral-800/80 pb-5 pt-6">
                     <h1 className="text-xl font-semibold tracking-tight">
                         File Manager
                     </h1>
@@ -408,7 +371,7 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                     aria-labelledby={`tab-${activeTab}`}
                 >
                     {activeTab === "Upload" && (
-                        <div className="px-6 py-8 space-y-6">
+                        <div className="py-8 space-y-6">
                             {/* Drop Zone */}
                             <label
                                 tabIndex={0}
@@ -511,7 +474,7 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                     )}
 
                     {activeTab === "Photos" && (
-                        <div className="px-6 py-6 space-y-4">
+                        <div className="py-6 space-y-4">
                             <h3 className="text-xs font-medium uppercase tracking-wide text-neutral-500">
                                 Photos Gallery ({photoMedia.length})
                             </h3>
@@ -575,14 +538,6 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        onClick={() => handleEditAltText(f.id, f.alt_text || null)}
-                                                        className={`rounded bg-black/60 p-1 text-neutral-300 backdrop-blur hover:text-white ${FOCUS_RING}`}
-                                                        title="Edit Alt Text"
-                                                    >
-                                                        <Edit className="h-3.5 w-3.5" />
-                                                    </button>
-                                                    <button
-                                                        type="button"
                                                         onClick={() => handleCopyUrl(f)}
                                                         className={`rounded bg-black/60 px-1.5 py-0.5 text-xs text-neutral-300 backdrop-blur hover:text-white ${FOCUS_RING}`}
                                                         title="Copy URL"
@@ -601,7 +556,7 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                     {activeTab === "Files" && (
                         <>
                             {/* Search */}
-                            <div className="px-6 pt-4">
+                            <div className="pt-4">
                                 <div className="relative">
                                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
                                     <input
@@ -621,7 +576,6 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                                         <tr className="border-b text-left text-xs uppercase tracking-wide">
                                             <th className="px-6 py-3 font-medium">File description</th>
                                             <th className="px-6 py-3 font-medium">Type</th>
-                                            <th className="px-6 py-3 font-medium whitespace-nowrap">Alt Text</th>
                                             <th className="px-6 py-3 text-right font-medium whitespace-nowrap">Size</th>
                                             <th className="px-6 py-3 text-right font-medium whitespace-nowrap">Created at</th>
                                             <th className="px-6 py-3 font-medium whitespace-nowrap">Action</th>
@@ -667,13 +621,6 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                                                     <td className="px-6 py-4">
                                                         {file.mime_type}
                                                     </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="group flex items-center justify-between gap-2">
-                                                            <span className="truncate text-neutral-400">
-                                                                {file.alt_text || "—"}
-                                                            </span>
-                                                        </div>
-                                                    </td>
                                                     <td className="px-6 py-4 text-right tabular-nums whitespace-nowrap">
                                                         {((file.file_size || 0) / 1024).toFixed(1)} KB
                                                     </td>
@@ -682,13 +629,6 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                                                     </td>
                                                     <td>
                                                         <div className="flex items-center justify-evenly">
-                                                            <button
-                                                                className="rounded-full p-1.5 transition-colors hover:text-neutral-200"
-                                                                onClick={() => handleEditAltText(file.id, file.alt_text || null)}
-                                                                title="Edit Alt Text"
-                                                            >
-                                                                <Edit className="w-4 h-4"/>
-                                                            </button>
                                                             <button
                                                                 className="rounded-full p-1.5 transition-colors text-red-500 hover:text-red-400 disabled:opacity-50"
                                                                 onClick={() => {
@@ -713,55 +653,6 @@ export default function StoragePage({ pickerMode = false, initialTab = "Files", 
                     )}
                 </div>
             </div>
-
-            <Dialog open={!!editingAltTextId} onOpenChange={(open) => {
-                if (!open) setEditingAltTextId(null);
-            }}
-            >
-                <DialogContent className="w-full !max-w-4xl min-h-screen">
-                    <DialogHeader>
-                        <DialogTitle>Edit Alt Text</DialogTitle>
-                        <DialogDescription>
-                            Provide descriptive alt text for this media. This improves accessibility and SEO.
-                        </DialogDescription>
-                    </DialogHeader>
-                    {(() => {
-                        const editingFile = editingAltTextId ? mediaFiles.find(f => f.id === editingAltTextId) : null;
-                        return (
-                            <div className="py-4 space-y-4">
-                                {editingFile?.mime_type?.startsWith("image/") && (
-                                    <div className="relative aspect-video w-full overflow-hidden rounded-md border bg-neutral-900/50">
-                                        <Image
-                                            src={editingFile.cloudinary_secure_url}
-                                            alt={editingFile.file_name}
-                                            fill
-                                            className="object-contain"
-                                        />
-                                    </div>
-                                )}
-                                <Input
-                                    value={editingAltTextValue}
-                                    onChange={(e) => setEditingAltTextValue(e.target.value)}
-                                    placeholder="Enter alt text..."
-                                    autoFocus
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && editingAltTextId) handleSaveAltText(editingAltTextId);
-                                    }}
-                                />
-                            </div>
-                        );
-                    })()}
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setEditingAltTextId(null)} disabled={isSavingAltText}>
-                            Cancel
-                        </Button>
-                        <Button onClick={() => editingAltTextId && handleSaveAltText(editingAltTextId)} disabled={isSavingAltText}>
-                            {isSavingAltText ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Save
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
 
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <AlertDialogContent size="sm">

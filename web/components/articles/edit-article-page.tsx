@@ -122,7 +122,7 @@ export default function EditArticlePage({ postId }: EditArticlePageProps) {
     }
 
     return (
-        <main className="border-x max-w-6xl mx-auto border-b">
+        <main className="border-x max-w-4xl mx-auto border-b">
             <ArticleEditorHeader
                 value={value}
                 isUpdate

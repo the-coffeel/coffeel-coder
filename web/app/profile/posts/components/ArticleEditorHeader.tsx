@@ -32,7 +32,7 @@ export function ArticleEditorHeader({
     return (
         <>
             <div className="border-b p-4">
-                <div className="max-w-6xl mx-auto flex items-center">
+                <div className="max-w-4xl mx-auto flex items-center">
                     <h1 className="font-bold grow">
                         {isUpdate ? 'Update Share Place' : 'Share Place'}
                     </h1>

@@ -230,8 +230,8 @@ export default function Username() {
         !isUnchanged
 
     return (
-        <div className="mx-auto w-full max-w-2xl bg-background border-r min-h-screen">
-            <div className="border-b px-4 py-4">
+        <div className="mx-auto w-full max-w-4xl bg-background">
+            <div className="px-4 py-4">
                 <Link
                     href="/profile/setup"
                     className="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:underline"
